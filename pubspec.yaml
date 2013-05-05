@@ -3,7 +3,10 @@ description: >
    An implementation of an AVL tree (a balanced binary search tree)
 
 author: Karl Guggisberg <karl.guggisberg@guggis.ch>
-version: 0.0.1
+version: 0.0.2
+homepage: https://github.com/Gubaer/dart-avl-tree.git
+documentation: http://gubaer.github.io/dart-avl-tree/doc/index.html
+
 
 dev_dependencies:
-  unittest: any
+  unittest: ">=0.5.4 <0.6.0"

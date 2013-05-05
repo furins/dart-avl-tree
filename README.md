@@ -43,7 +43,7 @@ See [output from dartdoc](http://gubaer.github.io/dart-avl-tree/doc/index.html)
 
 ```
 dependencies:
-  avl_tree: 0.0.1
+  avl_tree: 0.0.2
 ```
 to your `pubspec.yaml`.
 
@@ -51,7 +51,7 @@ See [version history](http://pub.dartlang.org/packages/avl_tree).
 
 ## Status
 
-[![Build Status](https://drone.io/github.com/Gubaer/dart-simple-features/status.png)](https://drone.io/github.com/Gubaer/dart-simple-features/latest)
+[![Build Status](https://drone.io/github.com/Gubaer/dart-avl-tree/status.png)](https://drone.io/github.com/Gubaer/dart-avl-tree/latest)
 
 ## License 
 `avl_tree` is licensed under the Apache 2.0 license, see files LICENSE and NOTICE.
