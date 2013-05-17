@@ -57,6 +57,10 @@ class _AvlTreeNode<T> {
   bool removeEquivalent(T value) {
     if (! hasMultipleValues) throw new StateError("can't remove from a single value");
     _value.remove(value);
+    if (_value.length == 1) {
+      // unwrap if there is only one value left
+      _value = _value.first;
+    }
   }
 
   T get value => _value;
@@ -95,18 +99,26 @@ class _AvlTreeNode<T> {
  *    where multiple overlapping line segments can be handled as equivalence
  *    class of line segments stored in one tree node.
  *
- * ## Simple example (not using advanced features)
- * [:
- * // create a tree, and use some methods
- * var tree = new AvlTree<int>();
- * tree.add(0);
- * tree.add(1);
- * tree.add(2);
- * print(tree.inorder.toList());  // -> [0,1,2]
- * tree.remove(2);
- * print(tree.inorder.toList());  // -> [0,1]
- * print(tree.contains(0));       // true
- * :]
+ * ## Simple example
+ *
+ *      // create a tree, and use some methods, use the standard
+ *      // int.compareTo function for ordering
+ *      var tree = new AvlTree<int>();
+ *      tree.addAll([0,1]);
+ *      tree.add(2);
+ *      print(tree.inorder.toList());  // -> [0,1,2]
+ *      tree.remove(2);
+ *      print(tree.inorder.toList());  // -> [0,1]
+ *      print(tree.contains(0));       // true
+ *
+ * ## Using a custom compare function
+ *
+ *     // a balanced tree of strings, ordered in reverse lexicographical
+ *     // order
+ *     var order = (String s1, String s2) => s2.compareTo(s1);
+ *     var tree = new AvlTree<String>(compare: order);
+ *     tree.addAll(["aaa", "zzz"]);
+ *     print(tree.inorder.toList);     // ["zzz", "aaa"]
  */
 class AvlTree<T> {
 
@@ -131,7 +143,7 @@ class AvlTree<T> {
   var _allowEquivalenceClasses = false;
 
   /**
-   * Creates a tree.
+   * Creates an AVL tree.
    *
    * [compare] is an optional compare function for two values of
    * type [T]. If missing or null, T must extend [Comparable] and
@@ -140,7 +152,8 @@ class AvlTree<T> {
    *
    * If [allowEquivalenceClasses] is true, the tree stores multiple values
    * which are equal with respect to `compare` but not identical with
-   * respect to Darts `identical()`-function.
+   * respect to Darts `identical()`-function. In this case a tree node
+   * become multi-valued.
    */
   AvlTree({int compare(T v1, T v2), allowEquivalenceClasses:false}) {
     if (compare != null) {
@@ -500,6 +513,8 @@ class AvlTree<T> {
     return _lookupNode(value, compare) != null;
   }
 
+
+
   /**
    * Returns the smallest value in the tree or an empty iteralbe, if
    * no such value exists (because the tree is empty).
@@ -666,7 +681,6 @@ class AvlTree<T> {
    * in the class description.
    *
    * Retuns an empty [Iterable] if there is no such equivalence class.
-   *
    */
   Iterable<T> inorderEqualOrLarger(reference) {
     var n = _leftNeighbourNode(reference);

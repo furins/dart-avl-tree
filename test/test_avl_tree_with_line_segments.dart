@@ -48,6 +48,9 @@ class LineSegment {
      assert(start.y > end.y || (start.y == end.y && start.x < end.x));
    }
 
+   LineSegment.from(l1, l2):
+       this(new Point(l1[0],l1[1]), new Point(l2[0],l2[1]));
+
    bool hasEndpoint(p) => p == start || p == end;
 
    /**
@@ -147,7 +150,7 @@ main() {
 
   group("inserting segments -", () {
     test("one segment", () {
-      var tree = new AvlTree<LineSegment>();
+      var tree = new AvlTree<LineSegment>(allowEquivalenceClasses: true);
       // a vertical line from point (0,5) to (0,0)
       var s = new LineSegment(new Point(0,5), new Point(0,0));
       // sweep line is at y = 5, event is (5,0)
@@ -156,7 +159,7 @@ main() {
     });
 
     test("two segments", () {
-      var tree = new AvlTree<LineSegment>();
+      var tree = new AvlTree<LineSegment>(allowEquivalenceClasses: true);
       var s1 = new LineSegment(new Point(0,5), new Point(5,0));
       var s2 = new LineSegment(new Point(0,5), new Point(-5,0));
 
@@ -173,7 +176,7 @@ main() {
     });
 
     test("three segments, including a horizontal line", () {
-      var tree = new AvlTree<LineSegment>();
+      var tree = new AvlTree<LineSegment>(allowEquivalenceClasses: true);
       // s3 is a horizontal line
       var s3 = new LineSegment(new Point(0,5), new Point(5,5));
       var s1 = new LineSegment(new Point(0,5), new Point(5,0));
@@ -200,7 +203,7 @@ main() {
      var s1 = new LineSegment(new Point(-5,5), new Point(5,-5));
      var s2 = new LineSegment(new Point(2,2), new Point(-2,-2));
 
-     var tree = new AvlTree<LineSegment>();
+     var tree = new AvlTree<LineSegment>(allowEquivalenceClasses: true);
      var compare = new SweepLineCompareFunction(null);
 
      /*
@@ -251,7 +254,7 @@ main() {
       // a vertical line intersecting x at 10
       var sr = new LineSegment(new Point(10, 1), new Point(10,-1));
 
-      var tree = new AvlTree<LineSegment>();
+      var tree = new AvlTree<LineSegment>(allowEquivalenceClasses: true);
 
       var p = new Point(0,0);
       var compare = new SweepLineCompareFunction(p);
@@ -296,6 +299,31 @@ main() {
       ret = tree.rightNeighbour(compare);
       expect(ret.length, 1);
       expect(ret.first, sr);
+    });
+  });
+
+  group("overlapping segments -", () {
+    test("add/remove two overlapping segments", () {
+      var tree = new AvlTree<LineSegment>(allowEquivalenceClasses: true);
+
+      // s1 and s2 are equal with respect to the sweep line ordering.
+      var s1 = new LineSegment.from([5,5],[3,3]);
+      var s2 = new LineSegment.from([4,4],[2,2]);
+
+      var p = new Point(0,0);
+      var compare = new SweepLineCompareFunction(p);
+      compare.event = s1.start;
+      tree.add(s1, compare: compare);
+      compare.event = s2.start;
+      tree.add(s2, compare: compare);
+      expect(tree.length, 2);
+      expect(tree.largest.length, 2);
+      expect(tree.smallest.length, 2);
+
+      compare.event = s1.end;
+      tree.remove(s1, compare: compare);
+      compare.event = s2.end;
+      tree.remove(s2, compare: compare);
     });
   });
 }
