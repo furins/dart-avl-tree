@@ -63,7 +63,7 @@ See [output from dartdoc](http://gubaer.github.io/dart-avl-tree/doc/index.html)
 
 ```
 dependencies:
-  avl_tree: 0.0.3
+  avl_tree: 0.1.0
 ```
 to your `pubspec.yaml`.
 
