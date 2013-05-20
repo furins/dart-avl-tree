@@ -22,28 +22,48 @@ AVL trees:
    where multiple overlapping line segments can be handled as equivalence
    class of line segments stored in one tree node.
  
-## Simple example (not using advanced features)
-```dart
-// create a tree, and use some methods
-var tree = new AvlTree<int>();
-tree.add(0);
-tree.add(1);
-tree.add(2);
-print(tree.inorder.toList());  // -> [0,1,2]
-tree.remove(2);
-print(tree.inorder.toList());  // -> [0,1]
-print(tree.contains(0));       // true
-```
+# Examples
+## A balanced tree of ints 
+	  ```dart
+	  // create a tree, and use some methods, use the standard
+	  // int.compareTo function for ordering
+	  var tree = new AvlTree<int>();
+	  tree.addAll([0,1,2]);
+	  print(tree.inorder.toList());  // -> [0,1,2]
+	  tree.remove(2);
+	  print(tree.inorder.toList());  // -> [0,1]
+	  print(tree.contains(0));       // true
+      ```
 
-## API documentation
+ ## A tree of strings  in reverse lexicographic order
+	```dart
+     // a balanced tree of strings, ordered in reverse lexicographical
+     // order
+     var order = (String s1, String s2) => s2.compareTo(s1);
+     var tree = new AvlTree<String>(compare: order);
+     tree.addAll(["aaa", "zzz"]);
+     print(tree.inorder.toList);     // ["zzz", "aaa"]
+    ```
+    
+ ## A tree of strings, lowercase ordering, with equivalence classes
+	 ```dart
+     lowerCaseCompare(s,t) => s.toLowerCase().compareTo(t.toLowerCase());
+     var tree = new AvlTree<String>(compare:lowerCaseCompare,
+         withEquivalenceClasses: true);
+     tree.addAll(["aaa", "zzz", "AAA"]);
+     print(tree.smallest);         // -> ["aaa", "AAA"]
+     ```
+     
+
+# API documentation
 See [output from dartdoc](http://gubaer.github.io/dart-avl-tree/doc/index.html)
 
-## Depend on it
+# Depend on it
 `avl_tree` is available from [pub.dartlang.org](http://pub.dartlang.org). Add 
 
 ```
 dependencies:
-  avl_tree: 0.0.2
+  avl_tree: 0.0.3
 ```
 to your `pubspec.yaml`.
 
