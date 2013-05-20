@@ -25,9 +25,9 @@ main() {
       tree.add(1);
       tree.add(0);
       expect(tree.length, 3);
-      expect(tree._root.value, 1);
-      expect(tree._root.left.value, 0);
-      expect(tree._root.right.value, 2);
+      expect(tree._root.values, [1]);
+      expect(tree._root.left.values, [0]);
+      expect(tree._root.right.values, [2]);
     });
   });
 
@@ -39,9 +39,9 @@ main() {
       tree.add(1);
       tree.add(0);
       expect(tree.length, 3);
-      expect(tree._root.value, 1);
-      expect(tree._root.left.value, 2);
-      expect(tree._root.right.value, 0);
+      expect(tree._root.values, [1]);
+      expect(tree._root.left.values, [2]);
+      expect(tree._root.right.values, [0]);
     });
 
     test("using a custom compare function in the add operation", () {
@@ -53,9 +53,9 @@ main() {
       tree.add(1, compare: compare);
       tree.add(0, compare: compare);
       expect(tree.length, 3);
-      expect(tree._root.value, 1);
-      expect(tree._root.left.value, 0);
-      expect(tree._root.right.value, 2);
+      expect(tree._root.values, [1]);
+      expect(tree._root.left.values, [0]);
+      expect(tree._root.right.values, [2]);
     });
   });
 
@@ -104,14 +104,14 @@ main() {
       tree.add(0);
       tree.remove(0);
       expect(tree.length, 2);
-      expect(tree._root.value, 1);
-      expect(tree._root.right.value, 2);
+      expect(tree._root.values, [1]);
+      expect(tree._root.right.values, [2]);
       expect(tree._root.left, isNull);
 
       var ret = tree.remove(2);
       expect(ret, true);
       expect(tree.length, 1);
-      expect(tree._root.value, 1);
+      expect(tree._root.values, [1]);
       expect(tree._root.right, isNull);
       expect(tree._root.left, isNull);
 
@@ -208,14 +208,14 @@ main() {
       expect(tree.inorder.isEmpty, true);
     });
 
-    test("in a tree with one element ", () {
+    test("no equivalence classe - one element ", () {
       var tree = new AvlTree<int>();
       tree.add(0);
       expect(tree.inorder.length, 1);
       expect(tree.inorder.first, 0);
     });
 
-    test("in a tree with multiple elements", () {
+    test("no equivalence classe - multiple elements", () {
       var tree = new AvlTree<int>();
       for (int i=0; i < 10; i++) tree.add(i);
       var inorder = tree.inorder.toList();
@@ -223,6 +223,24 @@ main() {
       for (int i=0; i< 10; i++) {
         expect(inorder[i], i);
       }
+    });
+
+    test("with equivalence classes", () {
+      var compare = (s1, s2) {
+        return s1.toLowerCase().compareTo(s2.toLowerCase());
+      };
+      var tree = new AvlTree<String>(compare:compare, withEquivalenceClasses: true);
+      // creates a tree with three nodes, one node contains a list
+      // of strings: the equivalence class "bbb", "bBb" and "BBB"
+      tree.addAll([
+        "aaa",
+        "bbb", "bBb", "BBB",
+        "zzz"
+      ]);
+      var seq = tree.inorder.toList();
+      expect(seq[0], ["aaa"]);
+      expect(seq[1].toSet(), equals(["bbb", "bBb", "BBB"].toSet()));
+      expect(seq[2], ["zzz"]);
     });
   });
 
@@ -266,6 +284,24 @@ main() {
       expect(tree.inorderEqualOrLarger(buildOrder(5)).toList(), equals([5]));
       expect(tree.inorderEqualOrLarger(buildOrder(6)).isEmpty,true);
     });
+
+    test("with equivalence classes", () {
+      caseInsenstiveCompare(s,t) => s.toLowerCase().compareTo(t.toLowerCase());
+      var tree = new AvlTree<String>(
+          compare:caseInsenstiveCompare,
+          withEquivalenceClasses: true
+      );
+      tree.addAll(["aaa", "nnn", "NNN", "yyy"]);
+      expect(tree.inorderEqualOrLarger("aaa").toList(),
+          equals([["aaa"], ["nnn", "NNN"], ["yyy"]]));
+      expect(tree.inorderEqualOrLarger("nnn").toList(),
+          equals([["nnn", "NNN"], ["yyy"]]));
+      expect(tree.inorderEqualOrLarger("NNN").toList(),
+          equals([["nnn", "NNN"], ["yyy"]]));
+      expect(tree.inorderEqualOrLarger("Nnn").toList(),
+          equals([["nnn", "NNN"], ["yyy"]]));
+      expect(tree.inorderEqualOrLarger("zzz").isEmpty,true);
+    });
   });
 
   /* ------------------------------------------------------------------- */
@@ -298,7 +334,7 @@ main() {
     test("adding two equal, but non-identical values", () {
       var tree = new AvlTree<String>(
           compare:lowerCaseStringCompare,
-          allowEquivalenceClasses: true
+          withEquivalenceClasses: true
       );
       tree.add("abc");
       tree.add("ABC");
@@ -311,7 +347,7 @@ main() {
     test("removing an equal, but non-identical value", () {
       var tree = new AvlTree<String>(
           compare:lowerCaseStringCompare,
-          allowEquivalenceClasses: true
+          withEquivalenceClasses: true
       );
       tree.add("abc");
       tree.add("ABC");
@@ -327,53 +363,56 @@ main() {
 
   /* ------------------------------------------------------------------- */
   group("smallest -", () {
-    test("of an empty tree is an empty iterator", () {
+    test("of an empty tree is null", () {
       var tree = new AvlTree();
-      expect(tree.smallest.isEmpty, true);
+      expect(tree.smallest, isNull);
     });
 
-    test("of a tree with >0 elements is an iterator with one value", () {
+    test("of a non-empty tree without equivalence classes is a single value", () {
       var tree = new AvlTree<int>();
       tree.add(0);
-      expect(tree.smallest.length, 1);
-      expect(tree.smallest.first, 0);
+      expect(tree.smallest, 0);
     });
 
-    test("of a tree with equivalence classes with >0 elements is an "
-        "iterator with multiple value", () {
+    test("of a non-empty tree with equivalence classes is a  "
+        "list with multiple value", () {
       var tree = new AvlTree<String>(
           compare:lowerCaseStringCompare,
-          allowEquivalenceClasses: true
+          withEquivalenceClasses: true
       );
       tree.add("abc");
-      tree.add("ABC");
-      expect(tree.smallest.length, 2);
+      expect(tree.smallest.length, 1);
       expect(tree.smallest.contains("abc"), true);
-      expect(tree.smallest.contains("ABC"), true);
+
+      tree.add("aBc");
+      expect(tree.smallest.length, 2);
+      expect(tree.smallest.toSet(), equals(["abc", "aBc"].toSet()));
     });
   });
 
   /* ------------------------------------------------------------------- */
   group("largest -", () {
-    test("of an empty tree is an empty iterator", () {
+    test("of an empty tree is null", () {
       var tree = new AvlTree();
-      expect(tree.largest.isEmpty, true);
+      expect(tree.largest, isNull);
     });
 
-    test("of a tree with >0 elements is an iterator with one value", () {
+    test("of a non-empty tree without equivalence classes is a single value", () {
       var tree = new AvlTree<int>();
       tree.add(0);
-      expect(tree.largest.length, 1);
-      expect(tree.largest.first, 0);
+      expect(tree.largest, 0);
     });
 
-    test("of a tree with equivalence classes with >0 elements is an "
-        "iterator with multiple values", () {
+    test("of a non-empty tree with equivalence classes is a "
+        "list of values", () {
       var tree = new AvlTree<String>(
           compare:lowerCaseStringCompare,
-          allowEquivalenceClasses: true
+          withEquivalenceClasses: true
       );
       tree.add("abc");
+      expect(tree.largest.length, 1);
+      expect(tree.largest.contains("abc"), true);
+
       tree.add("ABC");
       expect(tree.largest.length, 2);
       expect(tree.largest.contains("abc"), true);
@@ -384,58 +423,107 @@ main() {
 
   /* ------------------------------------------------------------------- */
   group("leftNeighbour -", () {
-    test("in an int tree", () {
+    test("in an empty tree is always null", () {
       var tree = new AvlTree<int>();
-      for(int i=0; i<10; i++) tree.add(i);
-      expect(tree.leftNeighbour(-1).isEmpty, true);
-      expect(tree.leftNeighbour(0).isEmpty, true);
-      for (int i=1; i < 10; i++) {
-        expect(tree.leftNeighbour(i).first, i-1, reason: "left neighour $i failed");
-      }
-      expect(tree.leftNeighbour(10).first, 9);
-      expect(tree.leftNeighbour(11).first, 9);
+      expect(tree.leftNeighbour(0), isNull);
     });
 
-    test("in an int tree with custom predicate", () {
-      var tree = new AvlTree<int>();
-      buildComparator(int value) => (int other) => value.compareTo(other);
 
+    test("in an int tree without equivalence classes", () {
+      var tree = new AvlTree<int>();
       for(int i=0; i<10; i++) tree.add(i);
-      expect(tree.leftNeighbour(buildComparator(-1)).isEmpty, true);
-      expect(tree.leftNeighbour(buildComparator(0)).isEmpty, true);
+
+      expect(tree.leftNeighbour(-1), isNull);
+      expect(tree.leftNeighbour(0), isNull);
       for (int i=1; i < 10; i++) {
-        expect(tree.leftNeighbour(buildComparator(i)).first, i-1, reason: "left neighour $i failed");
+        expect(tree.leftNeighbour(i), i-1, reason: "left neighour $i failed");
       }
-      expect(tree.leftNeighbour(buildComparator(10)).first, 9);
-      expect(tree.leftNeighbour(buildComparator(11)).first, 9);
+      expect(tree.leftNeighbour(10), 9);
+      expect(tree.leftNeighbour(11), 9);
+    });
+
+    test("in an int tree with custom predicate, without equivalence classes", () {
+      var tree = new AvlTree<int>();
+      // orders the tree values in reverse numeric ordering
+      inverseNumeric(n, m) => m.compareTo(n);
+      buildComparator(int value) => (int other) => inverseNumeric(value, other);
+
+      for(int i=0; i<10; i++) tree.add(i, compare: inverseNumeric);
+      expect(tree.leftNeighbour(buildComparator(10)), isNull);
+      expect(tree.leftNeighbour(buildComparator(9)), isNull);
+      for (int i=8; i >= 0; i--) {
+        expect(tree.leftNeighbour(buildComparator(i)), i+1, reason: "left neighour $i failed");
+      }
+      expect(tree.leftNeighbour(buildComparator(-1)), 0);
+      expect(tree.leftNeighbour(buildComparator(-2)), 0);
+    });
+
+    test("in a string tree with equivalence classes", () {
+      caseInsensitiveOrdering(s,t) => s.toLowerCase().compareTo(t.toLowerCase());
+
+      var tree = new AvlTree<String>(
+          compare: caseInsensitiveOrdering,
+          withEquivalenceClasses:true);
+
+      tree.add("nnn");
+      expect(tree.leftNeighbour("z"), equals(["nnn"]));
+      tree.add("NNN");
+      expect(tree.leftNeighbour("z").toSet(), equals(["nnn","NNN"].toSet()));
+      tree.add("aaa");
+      expect(tree.leftNeighbour("nnn"), equals(["aaa"]));
+      expect(tree.leftNeighbour("NNN"), equals(["aaa"]));
     });
   });
 
   /* ------------------------------------------------------------------- */
   group("reightNeighbour -", () {
-    test("in an int tree", () {
+    test("in an empty tree is always null", () {
       var tree = new AvlTree<int>();
-      for(int i=0; i<10; i++) tree.add(i);
-      expect(tree.rightNeighbour(10).isEmpty, true);
-      expect(tree.rightNeighbour(9).isEmpty, true);
-      for (int i=8; i >= 0; i--) {
-        expect(tree.rightNeighbour(i).first, i+1, reason: "reight neighour $i failed");
-      }
-      expect(tree.rightNeighbour(-1).first, 0);
-      expect(tree.rightNeighbour(-2).first, 0);
+      expect(tree.rightNeighbour(0), isNull);
     });
 
-    test("in an int tree with custom predicate", () {
+    test("in an int tree without equivalence classes", () {
       var tree = new AvlTree<int>();
       for(int i=0; i<10; i++) tree.add(i);
-      buildComparator(int value) => (int other) => value.compareTo(other);
-      expect(tree.rightNeighbour(buildComparator(10)).isEmpty, true);
-       expect(tree.rightNeighbour(buildComparator(10)).isEmpty, true);
+      expect(tree.rightNeighbour(10), isNull);
+      expect(tree.rightNeighbour(9), isNull);
       for (int i=8; i >= 0; i--) {
-        expect(tree.rightNeighbour(buildComparator(i)).first, i+1, reason: "reight neighour $i failed");
+        expect(tree.rightNeighbour(i), i+1, reason: "reight neighour $i failed");
       }
-      expect(tree.rightNeighbour(buildComparator(-1)).first, 0);
-      expect(tree.rightNeighbour(buildComparator(-2)).first, 0);
+      expect(tree.rightNeighbour(-1), 0);
+      expect(tree.rightNeighbour(-2), 0);
+    });
+
+    test("in an int tree with custom predicate, without equivalence classes", () {
+      var tree = new AvlTree<int>();
+      // orders the tree values in reverse numeric ordering
+      inverseNumeric(n, m) => m.compareTo(n);
+      buildComparator(int value) => (int other) => inverseNumeric(value, other);
+
+      for(int i=0; i<10; i++) tree.add(i, compare: inverseNumeric);
+      expect(tree.rightNeighbour(buildComparator(-1)), isNull);
+      expect(tree.rightNeighbour(buildComparator(0)), isNull);
+      for (int i=1; i < 10; i++) {
+        expect(tree.rightNeighbour(buildComparator(i)), i-1, reason: "right neighour $i failed");
+      }
+      expect(tree.rightNeighbour(buildComparator(10)), 9);
+      expect(tree.rightNeighbour(buildComparator(11)), 9);
+    });
+
+    test("in a string tree with equivalence classes", () {
+      caseInsensitiveOrdering(s,t) => s.toLowerCase().compareTo(t.toLowerCase());
+
+      var tree = new AvlTree<String>(
+          compare: caseInsensitiveOrdering,
+          withEquivalenceClasses:true);
+
+      tree.add("nnn");
+      expect(tree.rightNeighbour("a"), equals(["nnn"]));
+      tree.add("NNN");
+      expect(tree.rightNeighbour("a").toSet(), equals(["nnn","NNN"].toSet()));
+      tree.add("z");
+      expect(tree.rightNeighbour("nnn"), equals(["z"]));
+      expect(tree.rightNeighbour("NNN"), equals(["z"]));
     });
   });
 }

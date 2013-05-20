@@ -7,10 +7,10 @@ class _AvlTreeNode<T> {
   int height=0;
 
   // value is either a single value of type T or a list of value List<T>
-  var _value;
+  var _values;
 
   _AvlTreeNode(T value, this.parent) {
-    _value = value;
+    _values = new List.filled(1, value);
   }
 
   /**
@@ -34,84 +34,76 @@ class _AvlTreeNode<T> {
   bool get isRoot => parent == null;
   bool get isLeaf => left == null && right == null;
 
-  bool get hasSingleValue => _value is T;
-  bool get hasMultipleValues => _value is List<T>;
+  bool get hasSingleValue => _values.length == 1;
+  bool get hasMultipleValues => _values.length > 1;
 
-  T get compareValue => _value is List ? _value.first : _value;
+  T get compareValue => _values.first;
 
-  bool containsIdentical(T value) {
-    if (_value is List) return _value.any((v) => identical(v, value));
-    return identical(_value, value);
-  }
+  bool containsIdentical(T value) =>
+    _values.any((v) => identical(v, value));
+
 
   addEquivalent(T value) {
-    if (_value is T) {
-      _value = [_value, value];
-    } else if (_value is List<T>) {
-      _value.add(value);
-    } else {
-      throw new StateError("unexpected value");
-    }
+    var l = new List.generate(_values.length + 1,
+        (i) => i < _values.length ? values[i] : value,
+        growable:false
+    );
+    _values = l;
   }
 
   bool removeEquivalent(T value) {
     if (! hasMultipleValues) throw new StateError("can't remove from a single value");
-    _value.remove(value);
-    if (_value.length == 1) {
-      // unwrap if there is only one value left
-      _value = _value.first;
-    }
+    var j = _values.indexOf(value);
+    _values = new List.generate(_values.length -1,
+        (i) => (i < j) ? _values[i] : _values[i+1],
+        growable: false
+    );
   }
 
-  T get value => _value;
-
-  Iterable<T> get valuesAsIterable {
-    if (_value is List) {
-      return new UnmodifiableListView(_value);
-    } else {
-      return new UnmodifiableListView([_value]);
-    }
-  }
+  get values => _values;
 }
 
+
 /**
- * [AvlTree] is an implementation of a [AVL Tree](http://en.wikipedia.org/wiki/AVL_tree),
- * a self-balancing binary search-tree.
+ * [AvlTree] is an implementation of a [AVL Tree]
+ * (http://en.wikipedia.org/wiki/AVL_tree),a self-balancing binary search-tree.
  *
  * The implementation is basically a port from the [implementation in Java
- * by Justin Wheterell](https://code.google.com/p/java-algorithms-implementation/).
+ * by Justin Wheterell]
+ * (https://code.google.com/p/java-algorithms-implementation/).
  *
  * This implementation provides two custom features usually not present in
  * AVL trees:
  *
  * 1. The methods `add`, `remove`, or `contains` not only accept a value to be
  *    added, removed, or tested,
- *    but optionally also a compare function to be used in this very invocation only.
+ *    but optionally also a compare function to be used in this very invocation
+ *    only.
  *    This comes in handy, if a more efficient compare function can be
  *    used in a specific invocation. Example: the dynamically changing search
  *    tree of intersecting line segments in the
  *    [Bentley-Ottman-Algorithm](http://en.wikipedia.org/wiki/Bentley%E2%80%93Ottmann_algorithm).
  *
- * 2. The tree can (optionally) store multiple values which are equal with respect
+ * 2. The tree can (optionally) store multiple values which are equal with
+ *    respect
  *    to the tree ordering, but not identical with respect to Darts `identical()`
  *    function. One application is again the implementation of the Y-structure
  *    in the [Bentley-Ottman-Algorithm](http://en.wikipedia.org/wiki/Bentley%E2%80%93Ottmann_algorithm),
  *    where multiple overlapping line segments can be handled as equivalence
- *    class of line segments stored in one tree node.
+ *    class of line segments.
  *
- * ## Simple example
+ * # A simple tree of ints
  *
  *      // create a tree, and use some methods, use the standard
  *      // int.compareTo function for ordering
  *      var tree = new AvlTree<int>();
- *      tree.addAll([0,1]);
- *      tree.add(2);
+ *      tree.addAll([0,1,2]);
  *      print(tree.inorder.toList());  // -> [0,1,2]
  *      tree.remove(2);
  *      print(tree.inorder.toList());  // -> [0,1]
  *      print(tree.contains(0));       // true
  *
- * ## Using a custom compare function
+ * # A tree of strings  in reverse lexicographic order
  *
  *     // a balanced tree of strings, ordered in reverse lexicographical
  *     // order
@@ -119,6 +111,15 @@ class _AvlTreeNode<T> {
  *     var tree = new AvlTree<String>(compare: order);
  *     tree.addAll(["aaa", "zzz"]);
  *     print(tree.inorder.toList);     // ["zzz", "aaa"]
+ *
+ * # A tree of strings, lowercase ordering, with equivalence classes
+ *
+ *     lowerCaseCompare(s,t) => s.toLowerCase().compareTo(t.toLowerCase());
+ *     var tree = new AvlTree<String>(compare:lowerCaseCompare,
+ *         withEquivalenceClasses: true);
+ *     tree.addAll(["aaa", "zzz", "AAA"]);
+ *     print(tree.smallest);         // -> ["aaa", "AAA"]
+ *
  */
 class AvlTree<T> {
 
@@ -140,7 +141,7 @@ class AvlTree<T> {
   int _size = 0;
 
   var _compare = null;
-  var _allowEquivalenceClasses = false;
+  var _withEquivalenceClasses = false;
 
   /**
    * Creates an AVL tree.
@@ -150,18 +151,18 @@ class AvlTree<T> {
    * the tree compares two values `v1` and `v2` using `T`s
    * `compareTo` function.
    *
-   * If [allowEquivalenceClasses] is true, the tree stores multiple values
+   * If [withEquivalenceClasses] is true, the tree stores multiple values
    * which are equal with respect to `compare` but not identical with
    * respect to Darts `identical()`-function. In this case a tree node
    * become multi-valued.
    */
-  AvlTree({int compare(T v1, T v2), allowEquivalenceClasses:false}) {
+  AvlTree({int compare(T v1, T v2), withEquivalenceClasses:false}) {
     if (compare != null) {
       _compare = compare;
     } else {
       _compare = (T v1,  T v2) => v1.compareTo(v2);
     }
-    this._allowEquivalenceClasses = allowEquivalenceClasses;
+    this._withEquivalenceClasses = withEquivalenceClasses;
   }
 
   /// returns the size of the tree
@@ -179,7 +180,7 @@ class AvlTree<T> {
    * present in this tree, but it may supply a more efficient implementation
    * of the comparison operation for this very invocation of [addAll].
    */
-  addAll(Iterable<T> values, {int compare(T v1, T v2):null}) {
+  void addAll(Iterable<T> values, {int compare(T v1, T v2):null}) {
     if (values == null) return;
     values.forEach((s) => add(s, compare: compare));
   }
@@ -194,7 +195,7 @@ class AvlTree<T> {
    * of the comparison operation for this very invocation of [add].
    *
    */
-  add(T value, {int compare(T v1, T v2):null}) {
+  void add(T value, {int compare(T v1, T v2):null}) {
     var localCompare;
     if (compare == null) {
       localCompare = this._compare;
@@ -236,7 +237,7 @@ class AvlTree<T> {
             break loop;
 
           case 0:
-            if (!_allowEquivalenceClasses) {
+            if (!_withEquivalenceClasses) {
               throw new StateError(
                   "can't add value, value already present: $value"
               );
@@ -406,7 +407,7 @@ class AvlTree<T> {
     // Find node to remove
     var nodeToRemove = this._lookupNode(value, compare);
     if (nodeToRemove == null) return false;
-    if (_allowEquivalenceClasses) {
+    if (_withEquivalenceClasses) {
       if (!nodeToRemove.containsIdentical(value)) return false;
       if (nodeToRemove.hasMultipleValues) {
         nodeToRemove.removeEquivalent(value);
@@ -513,37 +514,50 @@ class AvlTree<T> {
     return _lookupNode(value, compare) != null;
   }
 
-
-
   /**
-   * Returns the smallest value in the tree or an empty iteralbe, if
-   * no such value exists (because the tree is empty).
+   * Returns the smallest value in the tree.
    *
-   * In the standard case, the returned iterable has either 0 or
-   * 1 value, but if this tree is created with the flag
-   * `allowEquivalenceClasses` it may consist of more than one value.
+   * The returned value is either:
+   *
+   * * `null`, if this tree is empty
+   * * a single value of type [T], if this tree doesn't
+   *   support equivalence classes
+   * * a list of type [: List[T] :], if this tree does
+   *   support equivalence classes
+   *
    */
-  Iterable<T> get smallest {
+  dynamic get smallest {
     var n = _root;
-    if (n == null) return _EMPTY_ITERABLE;
+    if (n == null) return null;
     while (n.left != null) n = n.left;
-    return n.valuesAsIterable;
+
+    if (this._withEquivalenceClasses) {
+      return n.values;
+    } else {
+      return n.values.first;
+    }
   }
 
-  static final _EMPTY_ITERABLE = [];
   /**
-   * Returns the largest equivalence class of values or an empty
-   * iterable, if no such value exists (because the tree is empty).
+   * Returns the largest value in the tree.
    *
-   * In the standard case, the returned iterable has either 0 or
-   * 1 values, but if this tree is created with the flag
-   * `allowEquivalenceClasses` it may consist of more than one value.
+   * The returned value is either:
+   *
+   * * `null`, if this tree is empty
+   * * a single value of type [T], if this tree doesn't
+   *   support equivalence classes
+   * * a list of type [: List[T] :], if this tree does
+   *   support equivalence classes
    */
-  Iterable<T> get largest {
+  dynamic get largest {
     var n = _root;
-    if (n == null) return _EMPTY_ITERABLE;
+    if (n == null) return null;
     while(n.right != null) n = n.right;
-    return n.valuesAsIterable;
+    if (this._withEquivalenceClasses) {
+      return n.values;
+    } else {
+      return n.values.first;
+    }
   }
 
   /**
@@ -555,7 +569,7 @@ class AvlTree<T> {
       var c = compare(value, node.compareValue);
       switch(c) {
         case 0:
-          if (!_allowEquivalenceClasses) return node;
+          if (!_withEquivalenceClasses) return node;
           if (node.containsIdentical(value)) return node;
           return null;
         case -1: node = node.left; break;
@@ -663,11 +677,19 @@ class AvlTree<T> {
    * Returns an iterable of all values traversing the tree
    * inorder. This is equivalent to an iterable of the
    * sorted values in the tree.
+   *
+   * If this tree supports equivalence classes, it returns
+   * an [Iterable] of [: List[T] :], otherwise an [Iterable]
+   * of [T].
+   *
+   * Returns an empty [Iterable] if the tree is empty.
    */
-  Iterable<T> get inorder => new _InorderIterable<T>.fromRoot(this._root);
+  Iterable<dynamic> get inorder => new _InorderIterable.fromRoot(
+      this._root, withEquivalenceClasses: _withEquivalenceClasses);
 
   /**
-   * Returns an inteable of the values starting with the first
+   * Returns an iterable
+   *  of the values starting with the first
    * node which is equal according to [reference] and consisting
    * of all values equal or larger with respect to [reference].
    *
@@ -680,37 +702,54 @@ class AvlTree<T> {
    * second option is useful in special usage scenarios only, see notes
    * in the class description.
    *
+   * If this tree supports equivalence classes, it returns
+   * an [Iterable] of [: List[T] :], otherwise an [Iterable]
+   * of [T].
+   *
    * Retuns an empty [Iterable] if there is no such equivalence class.
    */
-  Iterable<T> inorderEqualOrLarger(reference) {
+  Iterable<dynamic> inorderEqualOrLarger(reference) {
     var n = _leftNeighbourNode(reference);
     if (n == null) {
       return inorder;
     } else {
-      return new _InorderIterable<T>.fromNode(n).skip(1);
+      return new _InorderIterable.fromNode(
+          n,
+          withEquivalenceClasses: _withEquivalenceClasses
+      ).skip(1);
     }
   }
 
   /**
-   * Returns the equivalence class of the smallest value in the tree
-   * which is larger than [reference].
+   * Returns the smallest value in the tree which is larger than
+   * [reference].
    *
    * [reference] is either a value of type [T] or a function
-   * `int order(T treevalue)` which returns -1, 0, or 1 depending on
-   * wether the value `treevalue` of a tree node is smaller, equal,
+   * `int order(T other)` which returns -1, 0, or 1 depending on
+   * wether the value `other` in a tree node is smaller, equal,
    * or larger as the reference point.
    *
    * The standard case is to invoke it with a value of type [T]. The
    * second option is useful in special usage scenarios only, see notes
    * in the class description.
    *
-   * Retuns an empty [Iterable] if there is no such equivalence class.
+   * The returned value is either:
+   *
+   * * `null`, if this tree is empty
+   * * a single value of type [T], if this tree doesn't
+   *   support equivalence classes
+   * * a list of type [: List[T] :], if this tree does
+   *   support equivalence classes
    *
    */
-  Iterable<T> rightNeighbour(reference) {
+  dynamic rightNeighbour(reference) {
     var n = _rightNeighbourNode(reference);
-    if (n == null) return _EMPTY_ITERABLE;
-    return n.valuesAsIterable;
+    if (n == null) return null;
+    if (_withEquivalenceClasses) {
+      return n.values;
+    } else {
+      return n.values.first;
+    }
   }
 
   _AvlTreeNode<T> _rightNeighbourNode(reference) {
@@ -741,6 +780,7 @@ class AvlTree<T> {
           } else  {
             return firstGreaterParent(subtree);
           }
+          break; // to make the analyser happy
 
         case -1: // value < subtree.value
           if (subtree.left != null) {
@@ -748,6 +788,7 @@ class AvlTree<T> {
           } else {
             return subtree;
           }
+          break; // to make the analyser happy
 
         case 1: // value > subtree.value
           if (subtree.right != null) {
@@ -755,6 +796,7 @@ class AvlTree<T> {
           } else {
             return null;
           }
+          break; // to make the analyser happy
       }
     }
 
@@ -762,25 +804,35 @@ class AvlTree<T> {
   }
 
   /**
-   * Returns the equivalence class of the largest value in the tree
-   * which is smaller than [reference].
+   * Returns the largest value in the tree which is smaller than
+   * [reference].
    *
    * [reference] is either a value of type [T] or a function
-   * `int order(T treevalue)` which returns -1, 0, or 1 depending on
-   * wether the value `treevalue` of a tree node is smaller, equal,
+   * `int order(T other)` which returns -1, 0, or 1 depending on
+   * wether the value `other` in a tree node is smaller, equal,
    * or larger as the reference point.
    *
    * The standard case is to invoke it with a value of type [T]. The
    * second option is useful in special usage scenarios only, see notes
    * in the class description.
    *
-   * Retuns an empty [Iterable] if there is no such equivalence class.
+   * The returned value is either:
+   *
+   * * `null`, if this tree is empty
+   * * a single value of type [T], if this tree doesn't
+   *   support equivalence classes
+   * * a list of type [: List[T] :], if this tree does
+   *   support equivalence classes
    *
    */
-  Iterable<T> leftNeighbour(reference) {
+  dynamic leftNeighbour(reference) {
     var n = _leftNeighbourNode(reference);
-    if (n == null) return _EMPTY_ITERABLE;
-    return n.valuesAsIterable;
+    if (n == null) return null;
+    if (_withEquivalenceClasses){
+      return n.values;
+    } else {
+      return n.values.first;
+    }
   }
 
   _AvlTreeNode<T> _leftNeighbourNode(reference) {
@@ -811,6 +863,7 @@ class AvlTree<T> {
           } else  {
             return firstSmallerParent(subtree);
           }
+          break; //  to make the analyser happy
 
         case -1: // value < subtree.value
           if (subtree.left != null) {
@@ -818,6 +871,7 @@ class AvlTree<T> {
           } else {
             return firstSmallerParent(subtree);
           }
+          break; //  to make the analyser happy
 
         case 1: // value > subtree.value
           if (subtree.right != null) {
@@ -825,12 +879,13 @@ class AvlTree<T> {
           } else {
             return subtree;
           }
+          break; //  to make the analyser happy
       }
     }
     return leftNeighbourInSubtree(_root);
   }
 
-  dump() {
+  _dump() {
     ident(n) {
       var ret = "";
       for (int i=0; i< n; i++) ret += "  ";
@@ -839,7 +894,7 @@ class AvlTree<T> {
     dumptree(root, level) {
       var space = ident(level);
       if (root != null) {
-        print("${space}${root.value}");
+        print("${space}${root.values}");
         dumptree(root.left, level+1);
         dumptree(root.right, level+1);
       } else {
@@ -850,24 +905,27 @@ class AvlTree<T> {
   }
 }
 
-
-class _InorderIterator<T> implements Iterator<T>{
+class _InorderIterator implements Iterator {
   var cursor = null;
   bool isFirst = true;
-  _InorderIterator.fromRoot(root) {
+  final bool withEquivalenceClasses;
+  _InorderIterator.fromRoot(root, {this.withEquivalenceClasses:false}) {
     cursor = root;
     if (cursor == null) return;
     while(cursor.left != null) cursor = cursor.left;
   }
 
-  _InorderIterator.fromNode(node) {
+  _InorderIterator.fromNode(node, {this.withEquivalenceClasses:false}) {
     cursor = node;
   }
 
-  T get current {
+  get current {
     if (cursor == null) return null;
-    if (cursor.hasSingleValue) return cursor.value;
-    if (cursor.hasMultipleValues) return cursor.valuesAsIterable.toList();
+    if (withEquivalenceClasses) {
+      return cursor.values;
+    } else {
+      return cursor.values.first;
+    }
   }
 
   bool moveNext() {
@@ -896,15 +954,21 @@ class _InorderIterator<T> implements Iterator<T>{
   }
 }
 
-class _InorderIterable<T> extends Object with IterableMixin<T>
-  implements Iterable<T> {
-  Iterator<T> _iterator;
-  _InorderIterable.fromRoot(_AvlTreeNode<T> root) :
-    _iterator = new _InorderIterator<T>.fromRoot(root);
+class _InorderIterable extends Object with IterableMixin
+  implements Iterable {
+  Iterator _iterator;
 
-  _InorderIterable.fromNode(_AvlTreeNode<T> node) :
-    _iterator = new _InorderIterator<T>.fromNode(node);
+  _InorderIterable.fromRoot(_AvlTreeNode root, {withEquivalenceClasses: false}) :
+    _iterator = new _InorderIterator.fromRoot(
+        root,
+        withEquivalenceClasses: withEquivalenceClasses
+    );
 
+  _InorderIterable.fromNode(_AvlTreeNode node, {withEquivalenceClasses: false}) :
+    _iterator = new _InorderIterator.fromNode(
+        node,
+        withEquivalenceClasses: withEquivalenceClasses
+    );
 
-  Iterator<T> get iterator => _iterator;
+  Iterator get iterator => _iterator;
 }

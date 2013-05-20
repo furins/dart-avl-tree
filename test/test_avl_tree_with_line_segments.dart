@@ -150,7 +150,7 @@ main() {
 
   group("inserting segments -", () {
     test("one segment", () {
-      var tree = new AvlTree<LineSegment>(allowEquivalenceClasses: true);
+      var tree = new AvlTree<LineSegment>(withEquivalenceClasses: true);
       // a vertical line from point (0,5) to (0,0)
       var s = new LineSegment(new Point(0,5), new Point(0,0));
       // sweep line is at y = 5, event is (5,0)
@@ -159,7 +159,7 @@ main() {
     });
 
     test("two segments", () {
-      var tree = new AvlTree<LineSegment>(allowEquivalenceClasses: true);
+      var tree = new AvlTree<LineSegment>(withEquivalenceClasses: true);
       var s1 = new LineSegment(new Point(0,5), new Point(5,0));
       var s2 = new LineSegment(new Point(0,5), new Point(-5,0));
 
@@ -171,12 +171,12 @@ main() {
       tree.add(s2, compare: compare);
       var leafs = tree.inorder.toList();
       // s2 < s1 because of the angle in which it intersects the sweep line
-      expect(leafs[0], s2);
-      expect(leafs[1], s1);
+      expect(leafs[0], [s2]);
+      expect(leafs[1], [s1]);
     });
 
     test("three segments, including a horizontal line", () {
-      var tree = new AvlTree<LineSegment>(allowEquivalenceClasses: true);
+      var tree = new AvlTree<LineSegment>(withEquivalenceClasses: true);
       // s3 is a horizontal line
       var s3 = new LineSegment(new Point(0,5), new Point(5,5));
       var s1 = new LineSegment(new Point(0,5), new Point(5,0));
@@ -192,9 +192,9 @@ main() {
       // s2 < s1 because of the angle in which it intersects the sweep line
       // s3 > s1, s3 > s2 because horizontal line segments are aways larger
       // than any other segments
-      expect(leafs[0], s2);
-      expect(leafs[1], s1);
-      expect(leafs[2], s3);
+      expect(leafs[0], [s2]);
+      expect(leafs[1], [s1]);
+      expect(leafs[2], [s3]);
     });
   });
 
@@ -203,7 +203,7 @@ main() {
      var s1 = new LineSegment(new Point(-5,5), new Point(5,-5));
      var s2 = new LineSegment(new Point(2,2), new Point(-2,-2));
 
-     var tree = new AvlTree<LineSegment>(allowEquivalenceClasses: true);
+     var tree = new AvlTree<LineSegment>(withEquivalenceClasses: true);
      var compare = new SweepLineCompareFunction(null);
 
      /*
@@ -213,12 +213,12 @@ main() {
      // sweepline: y=5, event is (-5,-5)
      compare.event = new Point(-5,5);
        tree.add(s1, compare: compare);
-       expect(tree.inorder, equals([s1]));
+       expect(tree.inorder.toList(), equals([[s1]]));
 
      // sweepline: y=2, event is (2,2)
      compare.event = new Point(2,2);
        tree.add(s2, compare: compare);
-       expect(tree.inorder, equals([s1,s2]));
+       expect(tree.inorder.toList(), equals([[s1],[s2]]));
 
      // sweepline: y = 0, event is (0,0)
      compare.event = new Point(0,0);
@@ -229,12 +229,12 @@ main() {
        tree.add(s1, compare: compare);
        tree.add(s2, compare: compare);
        // now the order should be inverted
-       expect(tree.inorder, equals([s2, s1]));
+       expect(tree.inorder.toList(), equals([[s2], [s1]]));
 
     // sweepline y=-2, event is (-2,-2)
     compare.event = new Point(-2,-2);
       tree.remove(s2, compare:compare);
-      expect(tree.inorder, equals([s1]));
+      expect(tree.inorder.toList(), equals([[s1]]));
 
     // sweepline y=-5, event is (5, -5)
     compare.event = new Point(5, -5);
@@ -254,7 +254,7 @@ main() {
       // a vertical line intersecting x at 10
       var sr = new LineSegment(new Point(10, 1), new Point(10,-1));
 
-      var tree = new AvlTree<LineSegment>(allowEquivalenceClasses: true);
+      var tree = new AvlTree<LineSegment>(withEquivalenceClasses: true);
 
       var p = new Point(0,0);
       var compare = new SweepLineCompareFunction(p);
@@ -291,20 +291,20 @@ main() {
       // find all segments on or to the right of the current segment, then
       // skip the ones on the current event => yields the first segment
       // to the right not crossing 'p'
-      ret = tree.inorderEqualOrLarger(compare).skipWhile((s) => compare(s) == 0);
-      expect(ret.first, sr);
+      ret = tree.inorderEqualOrLarger(compare).skipWhile((s) => compare(s.first) == 0);
+      expect(ret.first, [sr]);
 
       // also the right neighbour is the segment immediatelly to the right
       // of all "equal" segments, i.e. those intersecting at 'p'
       ret = tree.rightNeighbour(compare);
       expect(ret.length, 1);
-      expect(ret.first, sr);
+      expect(ret[0], sr);
     });
   });
 
   group("overlapping segments -", () {
     test("add/remove two overlapping segments", () {
-      var tree = new AvlTree<LineSegment>(allowEquivalenceClasses: true);
+      var tree = new AvlTree<LineSegment>(withEquivalenceClasses: true);
 
       // s1 and s2 are equal with respect to the sweep line ordering.
       var s1 = new LineSegment.from([5,5],[3,3]);
