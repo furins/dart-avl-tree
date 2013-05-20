@@ -67,7 +67,7 @@ modulo case are in the same equivalence class.
 ## API documentation
 See [output from dartdoc](http://gubaer.github.io/dart-avl-tree/doc/index.html)
 
-# Depend on it
+## Depend on it
 `avl_tree` is available from [pub.dartlang.org](http://pub.dartlang.org). Add 
 
 ```
@@ -78,11 +78,11 @@ to your `pubspec.yaml`.
 
 See [version history](http://pub.dartlang.org/packages/avl_tree).
 
-### Status
+## Status
 
 [![Build Status](https://drone.io/github.com/Gubaer/dart-avl-tree/status.png)](https://drone.io/github.com/Gubaer/dart-avl-tree/latest)
 
-### License 
+## License 
 `avl_tree` is licensed under the Apache 2.0 license, see files LICENSE and NOTICE.
 
 	
