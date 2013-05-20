@@ -35,35 +35,51 @@
         
 <button id="show-inherited" class="show-inherited">Hide inherited</button>
 <div class="doc">
-<p><a class="crossref" href="../avl_tree/AvlTree.html#AvlTree">AvlTree</a> is an implementation of a <a href="http://en.wikipedia.org/wiki/AVL_tree">AVL Tree</a>,
-a self-balancing binary search-tree.</p>
+<p><a class="crossref" href="../avl_tree/AvlTree.html#AvlTree">AvlTree</a> is an implementation of a <a href="http://en.wikipedia.org/wiki/AVL_tree">AVL Tree</a>,a self-balancing binary search-tree.</p>
 <p>The implementation is basically a port from the <a href="https://code.google.com/p/java-algorithms-implementation/">implementation in Java
 by Justin Wheterell</a>.</p>
 <p>This implementation provides two custom features usually not present in
 AVL trees:</p><ol><li>
 <p>The methods <code>add</code>, <code>remove</code>, or <code>contains</code> not only accept a value to be
    added, removed, or tested,
-   but optionally also a compare function to be used in this very invocation only.
+   but optionally also a compare function to be used in this very invocation
+   only.
    This comes in handy, if a more efficient compare function can be
    used in a specific invocation. Example: the dynamically changing search
    tree of intersecting line segments in the
    <a href="http://en.wikipedia.org/wiki/Bentley%E2%80%93Ottmann_algorithm">Bentley-Ottman-Algorithm</a>.</p></li><li>
-<p>The tree can (optionally) store multiple values which are equal with respect
+<p>The tree can (optionally) store multiple values which are equal with
+   respect
    to the tree ordering, but not identical with respect to Darts <code>identical()</code>
    function. One application is again the implementation of the Y-structure
    in the <a href="http://en.wikipedia.org/wiki/Bentley%E2%80%93Ottmann_algorithm">Bentley-Ottman-Algorithm</a>,
    where multiple overlapping line segments can be handled as equivalence
-   class of line segments stored in one tree node.</p></li></ol>
-<h2>Simple example (not using advanced features)</h2>
-<p><code>// create a tree, and use some methods
-var tree = new AvlTree&lt;int&gt;();
-tree.add(0);
-tree.add(1);
-tree.add(2);
-print(tree.inorder.toList());  // -&gt; [0,1,2]
-tree.remove(2);
-print(tree.inorder.toList());  // -&gt; [0,1]
-print(tree.contains(0));       // true</code></p>
+   class of line segments.</p></li></ol>
+<h1>A simple tree of ints</h1>
+<pre><code> // create a tree, and use some methods, use the standard
+ // int.compareTo function for ordering
+ var tree = new AvlTree&lt;int&gt;();
+ tree.addAll([0,1,2]);
+ print(tree.inorder.toList());  // -&gt; [0,1,2]
+ tree.remove(2);
+ print(tree.inorder.toList());  // -&gt; [0,1]
+ print(tree.contains(0));       // true
+</code></pre>
+<h1>A tree of strings  in reverse lexicographic order</h1>
+<pre><code>// a balanced tree of strings, ordered in reverse lexicographical
+// order
+var order = (String s1, String s2) =&gt; s2.compareTo(s1);
+var tree = new AvlTree&lt;String&gt;(compare: order);
+tree.addAll(["aaa", "zzz"]);
+print(tree.inorder.toList);     // ["zzz", "aaa"]
+</code></pre>
+<h1>A tree of strings, lowercase ordering, with equivalence classes</h1>
+<pre><code>lowerCaseCompare(s,t) =&gt; s.toLowerCase().compareTo(t.toLowerCase());
+var tree = new AvlTree&lt;String&gt;(compare:lowerCaseCompare,
+    withEquivalenceClasses: true);
+tree.addAll(["aaa", "zzz", "AAA"]);
+print(tree.smallest);         // -&gt; ["aaa", "AAA"]
+</code></pre>
 <pre class="source">
 class AvlTree&lt;T&gt; {
 
@@ -85,27 +101,28 @@ class AvlTree&lt;T&gt; {
  int _size = 0;
 
  var _compare = null;
- var _allowEquivalenceClasses = false;
+ var _withEquivalenceClasses = false;
 
  /**
-  * Creates a tree.
+  * Creates an AVL tree.
   *
   * [compare] is an optional compare function for two values of
   * type [T]. If missing or null, T must extend [Comparable] and
   * the tree compares two values `v1` and `v2` using `T`s
   * `compareTo` function.
   *
-  * If [allowEquivalenceClasses] is true, the tree stores multiple values
+  * If [withEquivalenceClasses] is true, the tree stores multiple values
   * which are equal with respect to `compare` but not identical with
-  * respect to Darts `identical()`-function.
+  * respect to Darts `identical()`-function. In this case a tree node
+  * become multi-valued.
   */
- AvlTree({int compare(T v1, T v2), allowEquivalenceClasses:false}) {
+ AvlTree({int compare(T v1, T v2), withEquivalenceClasses:false}) {
    if (compare != null) {
      _compare = compare;
    } else {
      _compare = (T v1,  T v2) =&gt; v1.compareTo(v2);
    }
-   this._allowEquivalenceClasses = allowEquivalenceClasses;
+   this._withEquivalenceClasses = withEquivalenceClasses;
  }
 
  /// returns the size of the tree
@@ -123,7 +140,7 @@ class AvlTree&lt;T&gt; {
   * present in this tree, but it may supply a more efficient implementation
   * of the comparison operation for this very invocation of [addAll].
   */
- addAll(Iterable&lt;T&gt; values, {int compare(T v1, T v2):null}) {
+ void addAll(Iterable&lt;T&gt; values, {int compare(T v1, T v2):null}) {
    if (values == null) return;
    values.forEach((s) =&gt; add(s, compare: compare));
  }
@@ -138,7 +155,7 @@ class AvlTree&lt;T&gt; {
   * of the comparison operation for this very invocation of [add].
   *
   */
- add(T value, {int compare(T v1, T v2):null}) {
+ void add(T value, {int compare(T v1, T v2):null}) {
    var localCompare;
    if (compare == null) {
      localCompare = this._compare;
@@ -180,7 +197,7 @@ class AvlTree&lt;T&gt; {
            break loop;
 
          case 0:
-           if (!_allowEquivalenceClasses) {
+           if (!_withEquivalenceClasses) {
              throw new StateError(
                  "can't add value, value already present: $value"
              );
@@ -350,7 +367,7 @@ class AvlTree&lt;T&gt; {
    // Find node to remove
    var nodeToRemove = this._lookupNode(value, compare);
    if (nodeToRemove == null) return false;
-   if (_allowEquivalenceClasses) {
+   if (_withEquivalenceClasses) {
      if (!nodeToRemove.containsIdentical(value)) return false;
      if (nodeToRemove.hasMultipleValues) {
        nodeToRemove.removeEquivalent(value);
@@ -458,34 +475,49 @@ class AvlTree&lt;T&gt; {
  }
 
  /**
-  * Returns the smallest value in the tree or an empty iteralbe, if
-  * no such value exists (because the tree is empty).
+  * Returns the smallest value in the tree.
   *
-  * In the standard case, the returned iterable has either 0 or
-  * 1 value, but if this tree is created with the flag
-  * `allowEquivalenceClasses` it may consist of more than one value.
+  * The returned value is either:
+  *
+  * * `null`, if this tree is empty
+  * * a single value of type [T], if this tree doesn't
+  *   support equivalence classes
+  * * a list of type [: List[T] :], if this tree does
+  *   support equivalence classes
+  *
   */
- Iterable&lt;T&gt; get smallest {
+ dynamic get smallest {
    var n = _root;
-   if (n == null) return _EMPTY_ITERABLE;
+   if (n == null) return null;
    while (n.left != null) n = n.left;
-   return n.valuesAsIterable;
+
+   if (this._withEquivalenceClasses) {
+     return n.values;
+   } else {
+     return n.values.first;
+   }
  }
 
- static final _EMPTY_ITERABLE = [];
  /**
-  * Returns the largest equivalence class of values or an empty
-  * iterable, if no such value exists (because the tree is empty).
+  * Returns the largest value in the tree.
   *
-  * In the standard case, the returned iterable has either 0 or
-  * 1 values, but if this tree is created with the flag
-  * `allowEquivalenceClasses` it may consist of more than one value.
+  * The returned value is either:
+  *
+  * * `null`, if this tree is empty
+  * * a single value of type [T], if this tree doesn't
+  *   support equivalence classes
+  * * a list of type [: List[T] :], if this tree does
+  *   support equivalence classes
   */
- Iterable&lt;T&gt; get largest {
+ dynamic get largest {
    var n = _root;
-   if (n == null) return _EMPTY_ITERABLE;
+   if (n == null) return null;
    while(n.right != null) n = n.right;
-   return n.valuesAsIterable;
+   if (this._withEquivalenceClasses) {
+     return n.values;
+   } else {
+     return n.values.first;
+   }
  }
 
  /**
@@ -497,7 +529,7 @@ class AvlTree&lt;T&gt; {
      var c = compare(value, node.compareValue);
      switch(c) {
        case 0:
-         if (!_allowEquivalenceClasses) return node;
+         if (!_withEquivalenceClasses) return node;
          if (node.containsIdentical(value)) return node;
          return null;
        case -1: node = node.left; break;
@@ -605,11 +637,19 @@ class AvlTree&lt;T&gt; {
   * Returns an iterable of all values traversing the tree
   * inorder. This is equivalent to an iterable of the
   * sorted values in the tree.
+  *
+  * If this tree supports equivalence classes, it returns
+  * an [Iterable] of [: List[T] :], otherwise an [Iterable]
+  * of [T].
+  *
+  * Returns an empty [Iterable] if the tree is empty.
   */
- Iterable&lt;T&gt; get inorder =&gt; new _InorderIterable&lt;T&gt;.fromRoot(this._root);
+ Iterable&lt;dynamic&gt; get inorder =&gt; new _InorderIterable.fromRoot(
+     this._root, withEquivalenceClasses: _withEquivalenceClasses);
 
  /**
-  * Returns an inteable of the values starting with the first
+  * Returns an iterable
+  *  of the values starting with the first
   * node which is equal according to [reference] and consisting
   * of all values equal or larger with respect to [reference].
   *
@@ -622,38 +662,54 @@ class AvlTree&lt;T&gt; {
   * second option is useful in special usage scenarios only, see notes
   * in the class description.
   *
-  * Retuns an empty [Iterable] if there is no such equivalence class.
+  * If this tree supports equivalence classes, it returns
+  * an [Iterable] of [: List[T] :], otherwise an [Iterable]
+  * of [T].
   *
+  * Retuns an empty [Iterable] if there is no such equivalence class.
   */
- Iterable&lt;T&gt; inorderEqualOrLarger(reference) {
+ Iterable&lt;dynamic&gt; inorderEqualOrLarger(reference) {
    var n = _leftNeighbourNode(reference);
    if (n == null) {
      return inorder;
    } else {
-     return new _InorderIterable&lt;T&gt;.fromNode(n).skip(1);
+     return new _InorderIterable.fromNode(
+         n,
+         withEquivalenceClasses: _withEquivalenceClasses
+     ).skip(1);
    }
  }
 
  /**
-  * Returns the equivalence class of the smallest value in the tree
-  * which is larger than [reference].
+  * Returns the smallest value in the tree which is larger than
+  * [reference].
   *
   * [reference] is either a value of type [T] or a function
-  * `int order(T treevalue)` which returns -1, 0, or 1 depending on
-  * wether the value `treevalue` of a tree node is smaller, equal,
+  * `int order(T other)` which returns -1, 0, or 1 depending on
+  * wether the value `other` in a tree node is smaller, equal,
   * or larger as the reference point.
   *
   * The standard case is to invoke it with a value of type [T]. The
   * second option is useful in special usage scenarios only, see notes
   * in the class description.
   *
-  * Retuns an empty [Iterable] if there is no such equivalence class.
+  * The returned value is either:
+  *
+  * * `null`, if this tree is empty
+  * * a single value of type [T], if this tree doesn't
+  *   support equivalence classes
+  * * a list of type [: List[T] :], if this tree does
+  *   support equivalence classes
   *
   */
- Iterable&lt;T&gt; rightNeighbour(reference) {
+ dynamic rightNeighbour(reference) {
    var n = _rightNeighbourNode(reference);
-   if (n == null) return _EMPTY_ITERABLE;
-   return n.valuesAsIterable;
+   if (n == null) return null;
+   if (_withEquivalenceClasses) {
+     return n.values;
+   } else {
+     return n.values.first;
+   }
  }
 
  _AvlTreeNode&lt;T&gt; _rightNeighbourNode(reference) {
@@ -684,6 +740,7 @@ class AvlTree&lt;T&gt; {
          } else  {
            return firstGreaterParent(subtree);
          }
+         break; // to make the analyser happy
 
        case -1: // value &lt; subtree.value
          if (subtree.left != null) {
@@ -691,6 +748,7 @@ class AvlTree&lt;T&gt; {
          } else {
            return subtree;
          }
+         break; // to make the analyser happy
 
        case 1: // value &gt; subtree.value
          if (subtree.right != null) {
@@ -698,6 +756,7 @@ class AvlTree&lt;T&gt; {
          } else {
            return null;
          }
+         break; // to make the analyser happy
      }
    }
 
@@ -705,25 +764,35 @@ class AvlTree&lt;T&gt; {
  }
 
  /**
-  * Returns the equivalence class of the largest value in the tree
-  * which is smaller than [reference].
+  * Returns the largest value in the tree which is smaller than
+  * [reference].
   *
   * [reference] is either a value of type [T] or a function
-  * `int order(T treevalue)` which returns -1, 0, or 1 depending on
-  * wether the value `treevalue` of a tree node is smaller, equal,
+  * `int order(T other)` which returns -1, 0, or 1 depending on
+  * wether the value `other` in a tree node is smaller, equal,
   * or larger as the reference point.
   *
   * The standard case is to invoke it with a value of type [T]. The
   * second option is useful in special usage scenarios only, see notes
   * in the class description.
   *
-  * Retuns an empty [Iterable] if there is no such equivalence class.
+  * The returned value is either:
+  *
+  * * `null`, if this tree is empty
+  * * a single value of type [T], if this tree doesn't
+  *   support equivalence classes
+  * * a list of type [: List[T] :], if this tree does
+  *   support equivalence classes
   *
   */
- Iterable&lt;T&gt; leftNeighbour(reference) {
+ dynamic leftNeighbour(reference) {
    var n = _leftNeighbourNode(reference);
-   if (n == null) return _EMPTY_ITERABLE;
-   return n.valuesAsIterable;
+   if (n == null) return null;
+   if (_withEquivalenceClasses){
+     return n.values;
+   } else {
+     return n.values.first;
+   }
  }
 
  _AvlTreeNode&lt;T&gt; _leftNeighbourNode(reference) {
@@ -754,6 +823,7 @@ class AvlTree&lt;T&gt; {
          } else  {
            return firstSmallerParent(subtree);
          }
+         break; //  to make the analyser happy
 
        case -1: // value &lt; subtree.value
          if (subtree.left != null) {
@@ -761,6 +831,7 @@ class AvlTree&lt;T&gt; {
          } else {
            return firstSmallerParent(subtree);
          }
+         break; //  to make the analyser happy
 
        case 1: // value &gt; subtree.value
          if (subtree.right != null) {
@@ -768,12 +839,13 @@ class AvlTree&lt;T&gt; {
          } else {
            return subtree;
          }
+         break; //  to make the analyser happy
      }
    }
    return leftNeighbourInSubtree(_root);
  }
 
- dump() {
+ _dump() {
    ident(n) {
      var ret = "";
      for (int i=0; i&lt; n; i++) ret += "  ";
@@ -782,7 +854,7 @@ class AvlTree&lt;T&gt; {
    dumptree(root, level) {
      var space = ident(level);
      if (root != null) {
-       print("${space}${root.value}");
+       print("${space}${root.values}");
        dumptree(root.left, level+1);
        dumptree(root.right, level+1);
      } else {
@@ -798,27 +870,28 @@ class AvlTree&lt;T&gt; {
 <h3>Constructors</h3>
 <div class="method"><h4 id="AvlTree">
 <button class="show-code">Code</button>
-new <strong>AvlTree</strong>({<a href="http://api.dartlang.org/dart_core/int.html">int</a> compare(<a href="../avl_tree/AvlTree.html">T</a> v1, <a href="../avl_tree/AvlTree.html">T</a> v2), allowEquivalenceClasses: false}) <a class="anchor-link" href="#AvlTree"
+new <strong>AvlTree</strong>({<a href="http://api.dartlang.org/dart_core/int.html">int</a> compare(<a href="../avl_tree/AvlTree.html">T</a> v1, <a href="../avl_tree/AvlTree.html">T</a> v2), withEquivalenceClasses: false}) <a class="anchor-link" href="#AvlTree"
               title="Permalink to AvlTree&lt;T&gt;.AvlTree">#</a></h4>
 <div class="doc">
-<p>Creates a tree.</p>
+<p>Creates an AVL tree.</p>
 <p>
 <span class="param">compare</span> is an optional compare function for two values of
 type <code>T</code>. If missing or null, T must extend <code>Comparable</code> and
 the tree compares two values <code>v1</code> and <code>v2</code> using <code>T</code>s
 <code>compareTo</code> function.</p>
 <p>If 
-<span class="param">allowEquivalenceClasses</span> is true, the tree stores multiple values
+<span class="param">withEquivalenceClasses</span> is true, the tree stores multiple values
 which are equal with respect to <code>compare</code> but not identical with
-respect to Darts <code>identical()</code>-function.</p>
+respect to Darts <code>identical()</code>-function. In this case a tree node
+become multi-valued.</p>
 <pre class="source">
-AvlTree({int compare(T v1, T v2), allowEquivalenceClasses:false}) {
+AvlTree({int compare(T v1, T v2), withEquivalenceClasses:false}) {
  if (compare != null) {
    _compare = compare;
  } else {
    _compare = (T v1,  T v2) =&gt; v1.compareTo(v2);
  }
- this._allowEquivalenceClasses = allowEquivalenceClasses;
+ this._withEquivalenceClasses = withEquivalenceClasses;
 }
 </pre>
 </div>
@@ -828,7 +901,7 @@ AvlTree({int compare(T v1, T v2), allowEquivalenceClasses:false}) {
 <h3>Properties</h3>
 <div class="field"><h4 id="inorder">
 <button class="show-code">Code</button>
-final <a href="http://api.dartlang.org/dart_core/Iterable.html">Iterable</a>&lt;<a href="../avl_tree/AvlTree.html">T</a>&gt;         <strong>inorder</strong> <a class="anchor-link"
+final <a href="http://api.dartlang.org/dart_core/Iterable.html">Iterable</a>&lt;dynamic&gt;         <strong>inorder</strong> <a class="anchor-link"
             href="#inorder"
             title="Permalink to AvlTree&lt;T&gt;.inorder">#</a>
         </h4>
@@ -836,8 +909,13 @@ final <a href="http://api.dartlang.org/dart_core/Iterable.html">Iterable</a>&lt;
 <p>Returns an iterable of all values traversing the tree
 inorder. This is equivalent to an iterable of the
 sorted values in the tree.</p>
+<p>If this tree supports equivalence classes, it returns
+an <code>Iterable</code> of <code>List[T]</code>, otherwise an <code>Iterable</code>
+of <code>T</code>.</p>
+<p>Returns an empty <code>Iterable</code> if the tree is empty.</p>
 <pre class="source">
-Iterable&lt;T&gt; get inorder =&gt; new _InorderIterable&lt;T&gt;.fromRoot(this._root);
+Iterable&lt;dynamic&gt; get inorder =&gt; new _InorderIterable.fromRoot(
+   this._root, withEquivalenceClasses: _withEquivalenceClasses);
 </pre>
 </div>
 </div>
@@ -856,22 +934,27 @@ bool get isEmpty =&gt; _size == 0;
 </div>
 <div class="field"><h4 id="largest">
 <button class="show-code">Code</button>
-final <a href="http://api.dartlang.org/dart_core/Iterable.html">Iterable</a>&lt;<a href="../avl_tree/AvlTree.html">T</a>&gt;         <strong>largest</strong> <a class="anchor-link"
+final         <strong>largest</strong> <a class="anchor-link"
             href="#largest"
             title="Permalink to AvlTree&lt;T&gt;.largest">#</a>
         </h4>
         <div class="doc">
-<p>Returns the largest equivalence class of values or an empty
-iterable, if no such value exists (because the tree is empty).</p>
-<p>In the standard case, the returned iterable has either 0 or
-1 values, but if this tree is created with the flag
-<code>allowEquivalenceClasses</code> it may consist of more than one value.</p>
+<p>Returns the largest value in the tree.</p>
+<p>The returned value is either:</p><ul><li><code>null</code>, if this tree is empty</li><li>
+<p>a single value of type <code>T</code>, if this tree doesn't
+  support equivalence classes</p></li><li>
+<p>a list of type <code>List[T]</code>, if this tree does
+  support equivalence classes</p></li></ul>
 <pre class="source">
-Iterable&lt;T&gt; get largest {
+dynamic get largest {
  var n = _root;
- if (n == null) return _EMPTY_ITERABLE;
+ if (n == null) return null;
  while(n.right != null) n = n.right;
- return n.valuesAsIterable;
+ if (this._withEquivalenceClasses) {
+   return n.values;
+ } else {
+   return n.values.first;
+ }
 }
 </pre>
 </div>
@@ -891,22 +974,28 @@ int get length =&gt; _size;
 </div>
 <div class="field"><h4 id="smallest">
 <button class="show-code">Code</button>
-final <a href="http://api.dartlang.org/dart_core/Iterable.html">Iterable</a>&lt;<a href="../avl_tree/AvlTree.html">T</a>&gt;         <strong>smallest</strong> <a class="anchor-link"
+final         <strong>smallest</strong> <a class="anchor-link"
             href="#smallest"
             title="Permalink to AvlTree&lt;T&gt;.smallest">#</a>
         </h4>
         <div class="doc">
-<p>Returns the smallest value in the tree or an empty iteralbe, if
-no such value exists (because the tree is empty).</p>
-<p>In the standard case, the returned iterable has either 0 or
-1 value, but if this tree is created with the flag
-<code>allowEquivalenceClasses</code> it may consist of more than one value.</p>
+<p>Returns the smallest value in the tree.</p>
+<p>The returned value is either:</p><ul><li><code>null</code>, if this tree is empty</li><li>
+<p>a single value of type <code>T</code>, if this tree doesn't
+  support equivalence classes</p></li><li>
+<p>a list of type <code>List[T]</code>, if this tree does
+  support equivalence classes</p></li></ul>
 <pre class="source">
-Iterable&lt;T&gt; get smallest {
+dynamic get smallest {
  var n = _root;
- if (n == null) return _EMPTY_ITERABLE;
+ if (n == null) return null;
  while (n.left != null) n = n.left;
- return n.valuesAsIterable;
+
+ if (this._withEquivalenceClasses) {
+   return n.values;
+ } else {
+   return n.values.first;
+ }
 }
 </pre>
 </div>
@@ -916,7 +1005,7 @@ Iterable&lt;T&gt; get smallest {
 <h3>Methods</h3>
 <div class="method"><h4 id="add">
 <button class="show-code">Code</button>
-dynamic <strong>add</strong>(<a href="../avl_tree/AvlTree.html">T</a> value, {compare: null}) <a class="anchor-link" href="#add"
+void <strong>add</strong>(<a href="../avl_tree/AvlTree.html">T</a> value, {compare: null}) <a class="anchor-link" href="#add"
               title="Permalink to AvlTree&lt;T&gt;.add">#</a></h4>
 <div class="doc">
 <p>Adds a 
@@ -930,7 +1019,7 @@ present in the tree.
 present in this tree, but it may supply a more efficient implementation
 of the comparison operation for this very invocation of <a class="crossref" href="../avl_tree/AvlTree.html#add">add</a>.</p>
 <pre class="source">
-add(T value, {int compare(T v1, T v2):null}) {
+void add(T value, {int compare(T v1, T v2):null}) {
  var localCompare;
  if (compare == null) {
    localCompare = this._compare;
@@ -972,7 +1061,7 @@ add(T value, {int compare(T v1, T v2):null}) {
          break loop;
 
        case 0:
-         if (!_allowEquivalenceClasses) {
+         if (!_withEquivalenceClasses) {
            throw new StateError(
                "can't add value, value already present: $value"
            );
@@ -1000,7 +1089,7 @@ add(T value, {int compare(T v1, T v2):null}) {
 </div>
 <div class="method"><h4 id="addAll">
 <button class="show-code">Code</button>
-dynamic <strong>addAll</strong>(<a href="http://api.dartlang.org/dart_core/Iterable.html">Iterable</a>&lt;<a href="../avl_tree/AvlTree.html">T</a>&gt; values, {compare: null}) <a class="anchor-link" href="#addAll"
+void <strong>addAll</strong>(<a href="http://api.dartlang.org/dart_core/Iterable.html">Iterable</a>&lt;<a href="../avl_tree/AvlTree.html">T</a>&gt; values, {compare: null}) <a class="anchor-link" href="#addAll"
               title="Permalink to AvlTree&lt;T&gt;.addAll">#</a></h4>
 <div class="doc">
 <p>Adds the 
@@ -1014,7 +1103,7 @@ dynamic <strong>addAll</strong>(<a href="http://api.dartlang.org/dart_core/Itera
 present in this tree, but it may supply a more efficient implementation
 of the comparison operation for this very invocation of <a class="crossref" href="../avl_tree/AvlTree.html#addAll">addAll</a>.</p>
 <pre class="source">
-addAll(Iterable&lt;T&gt; values, {int compare(T v1, T v2):null}) {
+void addAll(Iterable&lt;T&gt; values, {int compare(T v1, T v2):null}) {
  if (values == null) return;
  values.forEach((s) =&gt; add(s, compare: compare));
 }
@@ -1047,39 +1136,13 @@ bool contains(T value, {int compare(T v1, T v2):null}) {
 </pre>
 </div>
 </div>
-<div class="method"><h4 id="dump">
-<button class="show-code">Code</button>
-dynamic <strong>dump</strong>() <a class="anchor-link" href="#dump"
-              title="Permalink to AvlTree&lt;T&gt;.dump">#</a></h4>
-<div class="doc">
-<pre class="source">
-dump() {
- ident(n) {
-   var ret = "";
-   for (int i=0; i&lt; n; i++) ret += "  ";
-   return ret;
- }
- dumptree(root, level) {
-   var space = ident(level);
-   if (root != null) {
-     print("${space}${root.value}");
-     dumptree(root.left, level+1);
-     dumptree(root.right, level+1);
-   } else {
-     print("${space}NIL");
-   }
- }
- dumptree(_root, 0);
-}
-</pre>
-</div>
-</div>
 <div class="method"><h4 id="inorderEqualOrLarger">
 <button class="show-code">Code</button>
-<a href="http://api.dartlang.org/dart_core/Iterable.html">Iterable</a>&lt;<a href="../avl_tree/AvlTree.html">T</a>&gt; <strong>inorderEqualOrLarger</strong>(reference) <a class="anchor-link" href="#inorderEqualOrLarger"
+<a href="http://api.dartlang.org/dart_core/Iterable.html">Iterable</a>&lt;dynamic&gt; <strong>inorderEqualOrLarger</strong>(reference) <a class="anchor-link" href="#inorderEqualOrLarger"
               title="Permalink to AvlTree&lt;T&gt;.inorderEqualOrLarger">#</a></h4>
 <div class="doc">
-<p>Returns an inteable of the values starting with the first
+<p>Returns an iterable
+ of the values starting with the first
 node which is equal according to 
 <span class="param">reference</span> and consisting
 of all values equal or larger with respect to 
@@ -1092,14 +1155,20 @@ or larger as the reference point.</p>
 <p>The standard case is to invoke it with a value of type <code>T</code>. The
 second option is useful in special usage scenarios only, see notes
 in the class description.</p>
+<p>If this tree supports equivalence classes, it returns
+an <code>Iterable</code> of <code>List[T]</code>, otherwise an <code>Iterable</code>
+of <code>T</code>.</p>
 <p>Retuns an empty <code>Iterable</code> if there is no such equivalence class.</p>
 <pre class="source">
-Iterable&lt;T&gt; inorderEqualOrLarger(reference) {
+Iterable&lt;dynamic&gt; inorderEqualOrLarger(reference) {
  var n = _leftNeighbourNode(reference);
  if (n == null) {
    return inorder;
  } else {
-   return new _InorderIterable&lt;T&gt;.fromNode(n).skip(1);
+   return new _InorderIterable.fromNode(
+       n,
+       withEquivalenceClasses: _withEquivalenceClasses
+   ).skip(1);
  }
 }
 </pre>
@@ -1107,26 +1176,34 @@ Iterable&lt;T&gt; inorderEqualOrLarger(reference) {
 </div>
 <div class="method"><h4 id="leftNeighbour">
 <button class="show-code">Code</button>
-<a href="http://api.dartlang.org/dart_core/Iterable.html">Iterable</a>&lt;<a href="../avl_tree/AvlTree.html">T</a>&gt; <strong>leftNeighbour</strong>(reference) <a class="anchor-link" href="#leftNeighbour"
+dynamic <strong>leftNeighbour</strong>(reference) <a class="anchor-link" href="#leftNeighbour"
               title="Permalink to AvlTree&lt;T&gt;.leftNeighbour">#</a></h4>
 <div class="doc">
-<p>Returns the equivalence class of the largest value in the tree
-which is smaller than 
+<p>Returns the largest value in the tree which is smaller than
+
 <span class="param">reference</span>.</p>
 <p>
 <span class="param">reference</span> is either a value of type <code>T</code> or a function
-<code>int order(T treevalue)</code> which returns -1, 0, or 1 depending on
-wether the value <code>treevalue</code> of a tree node is smaller, equal,
+<code>int order(T other)</code> which returns -1, 0, or 1 depending on
+wether the value <code>other</code> in a tree node is smaller, equal,
 or larger as the reference point.</p>
 <p>The standard case is to invoke it with a value of type <code>T</code>. The
 second option is useful in special usage scenarios only, see notes
 in the class description.</p>
-<p>Retuns an empty <code>Iterable</code> if there is no such equivalence class.</p>
+<p>The returned value is either:</p><ul><li><code>null</code>, if this tree is empty</li><li>
+<p>a single value of type <code>T</code>, if this tree doesn't
+  support equivalence classes</p></li><li>
+<p>a list of type <code>List[T]</code>, if this tree does
+  support equivalence classes</p></li></ul>
 <pre class="source">
-Iterable&lt;T&gt; leftNeighbour(reference) {
+dynamic leftNeighbour(reference) {
  var n = _leftNeighbourNode(reference);
- if (n == null) return _EMPTY_ITERABLE;
- return n.valuesAsIterable;
+ if (n == null) return null;
+ if (_withEquivalenceClasses){
+   return n.values;
+ } else {
+   return n.values.first;
+ }
 }
 </pre>
 </div>
@@ -1158,7 +1235,7 @@ bool remove(T value, {int compare(T v1, T v2): null}) {
  // Find node to remove
  var nodeToRemove = this._lookupNode(value, compare);
  if (nodeToRemove == null) return false;
- if (_allowEquivalenceClasses) {
+ if (_withEquivalenceClasses) {
    if (!nodeToRemove.containsIdentical(value)) return false;
    if (nodeToRemove.hasMultipleValues) {
      nodeToRemove.removeEquivalent(value);
@@ -1196,26 +1273,34 @@ bool remove(T value, {int compare(T v1, T v2): null}) {
 </div>
 <div class="method"><h4 id="rightNeighbour">
 <button class="show-code">Code</button>
-<a href="http://api.dartlang.org/dart_core/Iterable.html">Iterable</a>&lt;<a href="../avl_tree/AvlTree.html">T</a>&gt; <strong>rightNeighbour</strong>(reference) <a class="anchor-link" href="#rightNeighbour"
+dynamic <strong>rightNeighbour</strong>(reference) <a class="anchor-link" href="#rightNeighbour"
               title="Permalink to AvlTree&lt;T&gt;.rightNeighbour">#</a></h4>
 <div class="doc">
-<p>Returns the equivalence class of the smallest value in the tree
-which is larger than 
+<p>Returns the smallest value in the tree which is larger than
+
 <span class="param">reference</span>.</p>
 <p>
 <span class="param">reference</span> is either a value of type <code>T</code> or a function
-<code>int order(T treevalue)</code> which returns -1, 0, or 1 depending on
-wether the value <code>treevalue</code> of a tree node is smaller, equal,
+<code>int order(T other)</code> which returns -1, 0, or 1 depending on
+wether the value <code>other</code> in a tree node is smaller, equal,
 or larger as the reference point.</p>
 <p>The standard case is to invoke it with a value of type <code>T</code>. The
 second option is useful in special usage scenarios only, see notes
 in the class description.</p>
-<p>Retuns an empty <code>Iterable</code> if there is no such equivalence class.</p>
+<p>The returned value is either:</p><ul><li><code>null</code>, if this tree is empty</li><li>
+<p>a single value of type <code>T</code>, if this tree doesn't
+  support equivalence classes</p></li><li>
+<p>a list of type <code>List[T]</code>, if this tree does
+  support equivalence classes</p></li></ul>
 <pre class="source">
-Iterable&lt;T&gt; rightNeighbour(reference) {
+dynamic rightNeighbour(reference) {
  var n = _rightNeighbourNode(reference);
- if (n == null) return _EMPTY_ITERABLE;
- return n.valuesAsIterable;
+ if (n == null) return null;
+ if (_withEquivalenceClasses) {
+   return n.values;
+ } else {
+   return n.values.first;
+ }
 }
 </pre>
 </div>
@@ -1225,7 +1310,7 @@ Iterable&lt;T&gt; rightNeighbour(reference) {
         <div class="clear"></div>
         </div>
         <div class="footer">
-          <div>This page was generated at 2013-05-05 21:16:36.940</div>
+          <div>This page was generated at 2013-05-20 20:36:11.135</div>
         </div>
         <script async src="../client-static.js"></script>
         </body></html>
