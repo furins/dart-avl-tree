@@ -23,7 +23,7 @@ AVL trees:
    class of line segments stored in one tree node.
  
 # Examples
-## A balanced tree of ints 
+### A balanced tree of ints 
 
 ```dart
   // create a tree, and use some methods, use the standard
@@ -36,7 +36,9 @@ AVL trees:
   print(tree.contains(0));       // true
 ```
 
-## A tree of strings  in reverse lexicographic order
+### Reverse lexicographic order
+
+Creates balanced tree of strings, ordered in reverse lexicographic order.
 
 ```dart
  // a balanced tree of strings, ordered in reverse lexicographical
@@ -47,7 +49,11 @@ AVL trees:
  print(tree.inorder.toList);     // ["zzz", "aaa"]
 ```
     
-## A tree of strings, lowercase ordering, with equivalence classes
+### A tree of strings with equivalence classes
+
+Creates a tree of strings. The order is lexicographic with respect
+to the lowercase version of the strings. Strings which are equal
+modulo case are in the same equivalence class.
 
 ```dart
  lowerCaseCompare(s,t) => s.toLowerCase().compareTo(t.toLowerCase());
