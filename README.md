@@ -35,7 +35,7 @@ AVL trees:
 	  print(tree.contains(0));       // true
       ```
 
- ## A tree of strings  in reverse lexicographic order
+## A tree of strings  in reverse lexicographic order
 	```dart
      // a balanced tree of strings, ordered in reverse lexicographical
      // order
@@ -45,7 +45,7 @@ AVL trees:
      print(tree.inorder.toList);     // ["zzz", "aaa"]
     ```
     
- ## A tree of strings, lowercase ordering, with equivalence classes
+## A tree of strings, lowercase ordering, with equivalence classes
 	 ```dart
      lowerCaseCompare(s,t) => s.toLowerCase().compareTo(t.toLowerCase());
      var tree = new AvlTree<String>(compare:lowerCaseCompare,
