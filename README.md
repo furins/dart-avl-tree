@@ -1,10 +1,10 @@
-`avl_tree` provides  an implementation of am [AVL Tree](http://en.wikipedia.org/wiki/AVL_tree),
+`avl_tree` provides  an implementation of an [AVL Tree](http://en.wikipedia.org/wiki/AVL_tree),
 a self-balancing binary search-tree.
  
-The implementation is basically a port from the [implementation in Java
+It's basically a port from an [implementation in Java
 by Justin Wheterell](https://code.google.com/p/java-algorithms-implementation/).
  
-This implementation provides two custom features usually not present in
+This implementation includes two custom features usually not present in
 AVL trees:
  
 1. The methods `add`, `remove`, or `contains` not only accept a value to be
@@ -38,7 +38,7 @@ AVL trees:
 
 ### Reverse lexicographic order
 
-Creates balanced tree of strings, ordered in reverse lexicographic order.
+Creates a balanced tree of strings, ordered in reverse lexicographic order.
 
 ```dart
  // a balanced tree of strings, ordered in reverse lexicographical
@@ -63,7 +63,6 @@ modulo case are in the same equivalence class.
  print(tree.smallest);         // -> ["aaa", "AAA"]
 ```
      
-
 ## API documentation
 See [output from dartdoc](http://gubaer.github.io/dart-avl-tree/doc/index.html)
 
