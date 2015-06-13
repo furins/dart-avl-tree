@@ -79,7 +79,7 @@ See [version history](http://pub.dartlang.org/packages/avl_tree).
 
 ## Status
 
-[![Build Status](https://drone.io/github.com/Gubaer/dart-avl-tree/status.png)](https://drone.io/github.com/Gubaer/dart-avl-tree/latest)
+[![Build Status](https://travis-ci.org/Gubaer/dart-avl-tree.svg?branch=master)](https://travis-ci.org/Gubaer/dart-avl-tree)
 
 ## License 
 `avl_tree` is licensed under the Apache 2.0 license, see files LICENSE and NOTICE.
