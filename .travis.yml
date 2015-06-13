@@ -1,0 +1,7 @@
+language: dart
+dart:
+  - stable
+  - dev
+script:
+  - pub run test test/test_all.dart
+  
