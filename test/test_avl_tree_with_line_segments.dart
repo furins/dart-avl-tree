@@ -4,7 +4,7 @@
  */
 library test_avl_tree_with_line_segments;
 
-import "package:unittest/unittest.dart";
+import 'package:test/test.dart';
 import "dart:math" as math;
 import "../lib/avl_tree.dart";
 

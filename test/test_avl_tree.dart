@@ -1,6 +1,6 @@
 library test_avl_tree;
 
-import "package:unittest/unittest.dart";
+import 'package:test/test.dart';
 import "dart:collection";
 
 import "dart:math";
@@ -92,7 +92,7 @@ main() {
     test("removing the single root element from a tree is possible and yields an empty tree", () {
       var tree = new AvlTree<int>();
       tree.add(0);
-      var ret = tree.remove(0);
+      tree.remove(0);
       expect(tree.length, 0);
       expect(tree._root, isNull);
     });
