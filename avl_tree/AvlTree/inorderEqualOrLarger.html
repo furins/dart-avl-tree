@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>inorderEqualOrLarger method - AvlTree class - avl_tree library - Dart API</title>
+    <!-- required because all the links are pseudo-absolute -->
+    <base href="../..">
+
+    <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro|Roboto:500,400italic,300,400' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="const/prettify.css">
+    <link rel="stylesheet" href="const/css/bootstrap.min.css">
+    <link rel="stylesheet" href="const/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="const/styles.css">
+
+    <meta name="description" content="API docs for the inorderEqualOrLarger method from the AvlTree class, for the Dart programming language.">
+    <!-- Do not remove placeholder -->
+    <!-- Header Placeholder -->
+</head>
+
+<body>
+
+<header class="container-fluid" id="title">
+    <nav class="navbar navbar-fixed-top">
+        <div class="container">
+                <ol class="breadcrumbs gt-separated">
+                    <li><a href="index.html">avl_tree</a></li>
+                    <li><a href="avl_tree/index.html">avl_tree</a></li>
+                    <li><a href="avl_tree/AvlTree_class.html">AvlTree</a></li>
+                    <li><a href="avl_tree/AvlTree/inorderEqualOrLarger.html">inorderEqualOrLarger</a></li>
+                </ol>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="title-description">
+            <h1 class="title">
+                <span class="">inorderEqualOrLarger</span> <span class="kind">method</span>
+            </h1>
+            <p>
+                Returns an iterable
+ of the values starting with the first
+node which is equal according to reference and consisting
+of all values equal or larger with respect to reference.
+            </p>
+        </div>
+    </div>
+</header>
+
+<div class="container">
+
+    <section class="multi-line-signature">
+            <span class="returntype">Iterable</span>
+            <span class="name ">inorderEqualOrLarger</span>(
+            <br>
+            <div class="parameters">
+                <span class="parameter" id="inorderEqualOrLarger-param-reference"><span class="parameter-name">reference</span></span>
+            </div>
+            )    </section>
+
+    <section class="desc markdown">
+    
+        <p>Returns an iterable
+ of the values starting with the first
+node which is equal according to reference and consisting
+of all values equal or larger with respect to reference.</p>
+<p>reference is either a value of type T or a function
+<code>int order(T treevalue)</code> which returns -1, 0, or 1 depending on
+wether the value <code>treevalue</code> of a tree node is smaller, equal,
+or larger as the reference point.</p>
+<p>The standard case is to invoke it with a value of type T. The
+second option is useful in special usage scenarios only, see notes
+in the class description.</p>
+<p>If this tree supports equivalence classes, it returns
+an Iterable of <code class="prettyprint">ListT</code>, otherwise an Iterable
+of T.</p>
+<p>Retuns an empty Iterable if there is no such equivalence class.</p>
+    
+    </section>
+    
+</div> <!-- container -->
+
+<footer>
+    <div class="container-fluid">
+        <div class="container">
+            <!-- TODO: change to ordered list -->
+            <p class="text-center">
+                <span class="version">avl_tree 0.1.1</span> |
+                <span class="copyright">
+                    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>
+                </span>
+            </p>
+        </div>
+    </div>
+</footer>
+
+<script src="const/prettify.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        prettyPrint();
+    });
+</script>
+<!-- Do not remove placeholder -->
+<!-- Footer Placeholder -->
+</body>
+
+</html>

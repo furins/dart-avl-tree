@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>avl_tree - Dart API docs</title>
+    <!-- required because all the links are pseudo-absolute -->
+    <base href=".">
+
+    <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro|Roboto:500,400italic,300,400' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="const/prettify.css">
+    <link rel="stylesheet" href="const/css/bootstrap.min.css">
+    <link rel="stylesheet" href="const/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="const/styles.css">
+
+    <meta name="description" content="avl_tree API docs, for the Dart programming language.">
+    <!-- Do not remove placeholder -->
+    <!-- Header Placeholder -->
+</head>
+
+<body>
+
+<header class="container-fluid" id="title">
+    <nav class="navbar navbar-fixed-top">
+        <div class="container">
+                <ol class="breadcrumbs gt-separated">
+                    <li><a href="index.html">avl_tree</a></li>
+                </ol>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="title-description">
+            <h1 class="title">
+                <span class="">avl_tree</span> <span class="kind">package</span>
+            </h1>
+            <p>
+                avl_tree provides  an implementation of an AVL Tree,
+a self-balancing binary search-tree.
+            </p>
+        </div>
+    </div>
+</header>
+
+<div class="container">
+
+        <section class="desc markdown">
+        
+            <p><code>avl_tree</code> provides  an implementation of an <a href="http://en.wikipedia.org/wiki/AVL_tree">AVL Tree</a>,
+a self-balancing binary search-tree.</p>
+<p>It's basically a port from an <a href="https://code.google.com/p/java-algorithms-implementation/">implementation in Java
+by Justin Wheterell</a>.</p>
+<p>This implementation includes two custom features usually not present in
+AVL trees:</p><ol><li>
+<p>The methods <code>add</code>, <code>remove</code>, or <code>contains</code> not only accept a value to be
+   added, removed, or tested,
+   but optionally also a compare function to be used in this very invocation only.
+   This comes in handy, if a more efficient compare function can be
+   used in a specific invocation. Example: the dynamically changing search
+   tree of intersecting line segments in the
+   <a href="http://en.wikipedia.org/wiki/Bentley%E2%80%93Ottmann_algorithm">Bentley-Ottman-Algorithm</a>.</p></li><li>
+<p>The tree can (optionally) store multiple values which are equal with respect
+   to the tree ordering, but not identical with respect to Darts <code>identical()</code>
+   function. One application is again the implementation of the Y-structure
+   in the <a href="http://en.wikipedia.org/wiki/Bentley%E2%80%93Ottmann_algorithm">Bentley-Ottman-Algorithm</a>,
+   where multiple overlapping line segments can be handled as equivalence
+   class of line segments stored in one tree node.</p></li></ol>
+<h2>Examples</h2>
+<h3>A balanced tree of ints</h3>
+<pre class="dart"><code>  // create a tree, and use some methods, use the standard
+  // int.compareTo function for ordering
+  var tree = new AvlTree&lt;int&gt;();
+  tree.addAll([0,1,2]);
+  print(tree.inorder.toList());  // -&gt; [0,1,2]
+  tree.remove(2);
+  print(tree.inorder.toList());  // -&gt; [0,1]
+  print(tree.contains(0));       // true
+</code></pre>
+<h3>Reverse lexicographic order</h3>
+<p>Creates a balanced tree of strings, ordered in reverse lexicographic order.</p>
+<pre class="dart"><code> // a balanced tree of strings, ordered in reverse lexicographical
+ // order
+ var order = (String s1, String s2) =&gt; s2.compareTo(s1);
+ var tree = new AvlTree&lt;String&gt;(compare: order);
+ tree.addAll(["aaa", "zzz"]);
+ print(tree.inorder.toList);     // ["zzz", "aaa"]
+</code></pre>
+<h3>A tree of strings with equivalence classes</h3>
+<p>Creates a tree of strings. The order is lexicographic with respect
+to the lowercase version of the strings. Strings which are equal
+modulo case are in the same equivalence class.</p>
+<pre class="dart"><code> lowerCaseCompare(s,t) =&gt; s.toLowerCase().compareTo(t.toLowerCase());
+ var tree = new AvlTree&lt;String&gt;(compare:lowerCaseCompare,
+     withEquivalenceClasses: true);
+ tree.addAll(["aaa", "zzz", "AAA"]);
+ print(tree.smallest);         // -&gt; ["aaa", "AAA"]
+</code></pre>
+<h2>API documentation</h2>
+<p>See <a href="http://gubaer.github.io/dart-avl-tree/doc/index.html">output from dartdoc</a></p>
+<h2>Depend on it</h2>
+<p><code>avl_tree</code> is available from <a href="http://pub.dartlang.org">pub.dartlang.org</a>. Add </p>
+<pre><code>dependencies:
+  avl_tree: 0.1.0
+</code></pre>
+<p>to your <code>pubspec.yaml</code>.</p>
+<p>See <a href="http://pub.dartlang.org/packages/avl_tree">version history</a>.</p>
+<h2>Status</h2>
+<p><a href="https://travis-ci.org/Gubaer/dart-avl-tree"><a href="https://travis-ci.org/Gubaer/dart-avl-tree.svg?branch=master"><img alt="Build Status" src="https://travis-ci.org/Gubaer/dart-avl-tree.svg?branch=master"></img></a></a></p>
+<h2>License</h2>
+<p><code>avl_tree</code> is licensed under the Apache 2.0 license, see files LICENSE and NOTICE.</p>
+        
+        </section>
+        
+      <section class="summary" id="libraries">
+        <h2>Libraries</h2>
+        <dl>
+            <dt>
+              <span class="name "><a href="avl_tree/index.html">avl_tree</a></span>
+            </dt>
+            <dd>
+                avl_tree provides an implementation of an
+ AVL Tree, a self-balancing
+ binary search-tree.
+            </dd>
+        </dl>
+      </section>
+
+</div> <!-- container -->
+
+<footer>
+    <div class="container-fluid">
+        <div class="container">
+            <!-- TODO: change to ordered list -->
+            <p class="text-center">
+                <span class="version">avl_tree 0.1.1</span> |
+                <span class="copyright">
+                    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>
+                </span>
+            </p>
+        </div>
+    </div>
+</footer>
+
+<script src="const/prettify.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        prettyPrint();
+    });
+</script>
+<!-- Do not remove placeholder -->
+<!-- Footer Placeholder -->
+</body>
+
+</html>
