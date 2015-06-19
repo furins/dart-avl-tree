@@ -64,7 +64,7 @@ modulo case are in the same equivalence class.
 ```
      
 ## API documentation
-See [output from dartdoc](http://gubaer.github.io/dart-avl-tree/doc/index.html)
+See [output from dartdoc](http://gubaer.github.io/dart-avl-tree/)
 
 ## Depend on it
 `avl_tree` is available from [pub.dartlang.org](http://pub.dartlang.org). Add 
