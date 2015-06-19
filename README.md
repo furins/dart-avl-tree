@@ -71,7 +71,7 @@ See [output from dartdoc](http://gubaer.github.io/dart-avl-tree/)
 
 ```
 dependencies:
-  avl_tree: 0.1.0
+  avl_tree: "^0.1.1"
 ```
 to your `pubspec.yaml`.
 
