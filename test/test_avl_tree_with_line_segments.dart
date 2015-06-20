@@ -15,8 +15,7 @@ int orientation(p, q, r) {
   return 1;
 }
 
-
-class Point implements Comparable<Point>{
+class Point implements Comparable<Point> {
   final num x, y;
   Point(this.x, this.y);
 
@@ -24,6 +23,7 @@ class Point implements Comparable<Point>{
     int ret = x.compareTo(other.x);
     return ret != 0 ? ret : y.compareTo(other.y);
   }
+
   String toString() => "($x, $y)";
 
   int get hashCode {
@@ -42,18 +42,18 @@ class Point implements Comparable<Point>{
 }
 
 class LineSegment {
-   final Point start;
-   final Point end;
-   LineSegment(this.start, this.end) {
-     assert(start.y > end.y || (start.y == end.y && start.x < end.x));
-   }
+  final Point start;
+  final Point end;
+  LineSegment(this.start, this.end) {
+    assert(start.y > end.y || (start.y == end.y && start.x < end.x));
+  }
 
-   LineSegment.from(l1, l2):
-       this(new Point(l1[0],l1[1]), new Point(l2[0],l2[1]));
+  LineSegment.from(l1, l2)
+      : this(new Point(l1[0], l1[1]), new Point(l2[0], l2[1]));
 
-   bool hasEndpoint(p) => p == start || p == end;
+  bool hasEndpoint(p) => p == start || p == end;
 
-   /**
+  /**
     * This [LineSegment] is colinear with [other] iff this and [other]
     * lie on one straight line.
    */
@@ -78,7 +78,7 @@ class LineSegment {
    * higher the value, the latter the line segment.
    */
   num get counterclockwiseOrientation {
-    if (_ccwOrientation!= null) return _ccwOrientation;
+    if (_ccwOrientation != null) return _ccwOrientation;
     if (isHorizontal) return 1;
     var dx = end.x - start.x;
     var dy = end.y - start.y;
@@ -108,7 +108,8 @@ class SweepLineCompareFunction {
     // and 'other' overlap (i.e. all their endpoints are colineaer and the
     // intersection isn't empty). They are considered to be in an
     // equivalence class.
-    return value.counterclockwiseOrientation.compareTo(other.counterclockwiseOrientation);
+    return value.counterclockwiseOrientation
+        .compareTo(other.counterclockwiseOrientation);
   }
 }
 
@@ -119,27 +120,27 @@ main() {
       var values = [];
 
       // segments with positive slope, from flatter to steeper
-      l  = new LineSegment(new Point(5,2), new Point(0,0));
+      l = new LineSegment(new Point(5, 2), new Point(0, 0));
       values.add(l.counterclockwiseOrientation);
-      l  = new LineSegment(new Point(5,5), new Point(0,0));
+      l = new LineSegment(new Point(5, 5), new Point(0, 0));
       values.add(l.counterclockwiseOrientation);
-      l  = new LineSegment(new Point(5,1000), new Point(0,0));
+      l = new LineSegment(new Point(5, 1000), new Point(0, 0));
       values.add(l.counterclockwiseOrientation);
 
       // a vertical segments
-      l  = new LineSegment(new Point(0,5), new Point(0,0));
+      l = new LineSegment(new Point(0, 5), new Point(0, 0));
       values.add(l.counterclockwiseOrientation);
 
       // segments with negative slope from steeper to flatter
-      l  = new LineSegment(new Point(-5,5), new Point(0,0));
+      l = new LineSegment(new Point(-5, 5), new Point(0, 0));
       values.add(l.counterclockwiseOrientation);
-      l  = new LineSegment(new Point(-5,2), new Point(0,0));
+      l = new LineSegment(new Point(-5, 2), new Point(0, 0));
       values.add(l.counterclockwiseOrientation);
-      l  = new LineSegment(new Point(-5,0.01), new Point(0,0));
+      l = new LineSegment(new Point(-5, 0.01), new Point(0, 0));
       values.add(l.counterclockwiseOrientation);
 
       // a horizontal segment
-      l  = new LineSegment(new Point(0,0), new Point(5, 0));
+      l = new LineSegment(new Point(0, 0), new Point(5, 0));
       values.add(l.counterclockwiseOrientation);
 
       var sorted = new List.from(values);
@@ -152,20 +153,20 @@ main() {
     test("one segment", () {
       var tree = new AvlTree<LineSegment>(withEquivalenceClasses: true);
       // a vertical line from point (0,5) to (0,0)
-      var s = new LineSegment(new Point(0,5), new Point(0,0));
+      var s = new LineSegment(new Point(0, 5), new Point(0, 0));
       // sweep line is at y = 5, event is (5,0)
-      var compare = new SweepLineCompareFunction(new Point(5,0));
+      var compare = new SweepLineCompareFunction(new Point(5, 0));
       tree.add(s, compare: compare);
     });
 
     test("two segments", () {
       var tree = new AvlTree<LineSegment>(withEquivalenceClasses: true);
-      var s1 = new LineSegment(new Point(0,5), new Point(5,0));
-      var s2 = new LineSegment(new Point(0,5), new Point(-5,0));
+      var s1 = new LineSegment(new Point(0, 5), new Point(5, 0));
+      var s2 = new LineSegment(new Point(0, 5), new Point(-5, 0));
 
       // sweep line is at y = 5, event is (0,5), there are two
       // segments s1,s2 starting at the event
-      var compare = new SweepLineCompareFunction(new Point(0,5));
+      var compare = new SweepLineCompareFunction(new Point(0, 5));
       expect(compare(s1, s2), 1);
       tree.add(s1, compare: compare);
       tree.add(s2, compare: compare);
@@ -178,13 +179,13 @@ main() {
     test("three segments, including a horizontal line", () {
       var tree = new AvlTree<LineSegment>(withEquivalenceClasses: true);
       // s3 is a horizontal line
-      var s3 = new LineSegment(new Point(0,5), new Point(5,5));
-      var s1 = new LineSegment(new Point(0,5), new Point(5,0));
-      var s2 = new LineSegment(new Point(0,5), new Point(-5,0));
+      var s3 = new LineSegment(new Point(0, 5), new Point(5, 5));
+      var s1 = new LineSegment(new Point(0, 5), new Point(5, 0));
+      var s2 = new LineSegment(new Point(0, 5), new Point(-5, 0));
 
       // sweep line is at y = 5, event is (0,5), there are two
       // segments s1,s2 starting at the event
-      var compare = new SweepLineCompareFunction(new Point(0,5));
+      var compare = new SweepLineCompareFunction(new Point(0, 5));
       tree.add(s3, compare: compare);
       tree.add(s1, compare: compare);
       tree.add(s2, compare: compare);
@@ -199,64 +200,81 @@ main() {
   });
 
   test("processing events in the Bentley-Ottman-Algorithm", () {
-     // s1 and s2 intersect at (0,0)
-     var s1 = new LineSegment(new Point(-5,5), new Point(5,-5));
-     var s2 = new LineSegment(new Point(2,2), new Point(-2,-2));
+    // s1 and s2 intersect at (0,0)
+    var s1 = new LineSegment(new Point(-5, 5), new Point(5, -5));
+    var s2 = new LineSegment(new Point(2, 2), new Point(-2, -2));
 
-     var tree = new AvlTree<LineSegment>(withEquivalenceClasses: true);
-     var compare = new SweepLineCompareFunction(null);
+    var tree = new AvlTree<LineSegment>(withEquivalenceClasses: true);
+    var compare = new SweepLineCompareFunction(null);
 
-     /*
+    /*
       * simulate steps in the Bentley-Ottman-Algorithm
       */
 
-     // sweepline: y=5, event is (-5,-5)
-     compare.event = new Point(-5,5);
-       tree.add(s1, compare: compare);
-       expect(tree.inorder.toList(), equals([[s1]]));
+    // sweepline: y=5, event is (-5,-5)
+    compare.event = new Point(-5, 5);
+    tree.add(s1, compare: compare);
+    expect(
+        tree.inorder.toList(),
+        equals([
+          [s1]
+        ]));
 
-     // sweepline: y=2, event is (2,2)
-     compare.event = new Point(2,2);
-       tree.add(s2, compare: compare);
-       expect(tree.inorder.toList(), equals([[s1],[s2]]));
+    // sweepline: y=2, event is (2,2)
+    compare.event = new Point(2, 2);
+    tree.add(s2, compare: compare);
+    expect(
+        tree.inorder.toList(),
+        equals([
+          [s1],
+          [s2]
+        ]));
 
-     // sweepline: y = 0, event is (0,0)
-     compare.event = new Point(0,0);
-       // remove the intersecting segments
-       tree.remove(s1, compare: compare);
-       tree.remove(s2, compare: compare);
-       // add them again
-       tree.add(s1, compare: compare);
-       tree.add(s2, compare: compare);
-       // now the order should be inverted
-       expect(tree.inorder.toList(), equals([[s2], [s1]]));
+    // sweepline: y = 0, event is (0,0)
+    compare.event = new Point(0, 0);
+    // remove the intersecting segments
+    tree.remove(s1, compare: compare);
+    tree.remove(s2, compare: compare);
+    // add them again
+    tree.add(s1, compare: compare);
+    tree.add(s2, compare: compare);
+    // now the order should be inverted
+    expect(
+        tree.inorder.toList(),
+        equals([
+          [s2],
+          [s1]
+        ]));
 
     // sweepline y=-2, event is (-2,-2)
-    compare.event = new Point(-2,-2);
-      tree.remove(s2, compare:compare);
-      expect(tree.inorder.toList(), equals([[s1]]));
+    compare.event = new Point(-2, -2);
+    tree.remove(s2, compare: compare);
+    expect(
+        tree.inorder.toList(),
+        equals([
+          [s1]
+        ]));
 
     // sweepline y=-5, event is (5, -5)
     compare.event = new Point(5, -5);
-      tree.remove(s1, compare: compare);
-      expect(tree.isEmpty, true);
+    tree.remove(s1, compare: compare);
+    expect(tree.isEmpty, true);
   });
-
 
   group("left neighbour -", () {
     test("test cases along the steps of the Bentley-Ottman-Algorithm", () {
       // s1 and s2 intersect at (0,0)
-      var s1 = new LineSegment(new Point(-5,5), new Point(5,-5));
-      var s2 = new LineSegment(new Point(2,2), new Point(-2,-2));
+      var s1 = new LineSegment(new Point(-5, 5), new Point(5, -5));
+      var s2 = new LineSegment(new Point(2, 2), new Point(-2, -2));
 
       // a vertical line, intersecting x at -10
-      var sl = new LineSegment(new Point(-10, 1), new Point(-10,-1));
+      var sl = new LineSegment(new Point(-10, 1), new Point(-10, -1));
       // a vertical line intersecting x at 10
-      var sr = new LineSegment(new Point(10, 1), new Point(10,-1));
+      var sr = new LineSegment(new Point(10, 1), new Point(10, -1));
 
       var tree = new AvlTree<LineSegment>(withEquivalenceClasses: true);
 
-      var p = new Point(0,0);
+      var p = new Point(0, 0);
       var compare = new SweepLineCompareFunction(p);
       expect(compare(s1, sl), 1);
       expect(compare(s2, sl), 1);
@@ -291,7 +309,9 @@ main() {
       // find all segments on or to the right of the current segment, then
       // skip the ones on the current event => yields the first segment
       // to the right not crossing 'p'
-      ret = tree.inorderEqualOrLarger(compare).skipWhile((s) => compare(s.first) == 0);
+      ret = tree
+          .inorderEqualOrLarger(compare)
+          .skipWhile((s) => compare(s.first) == 0);
       expect(ret.first, [sr]);
 
       // also the right neighbour is the segment immediatelly to the right
@@ -307,10 +327,10 @@ main() {
       var tree = new AvlTree<LineSegment>(withEquivalenceClasses: true);
 
       // s1 and s2 are equal with respect to the sweep line ordering.
-      var s1 = new LineSegment.from([5,5],[3,3]);
-      var s2 = new LineSegment.from([4,4],[2,2]);
+      var s1 = new LineSegment.from([5, 5], [3, 3]);
+      var s2 = new LineSegment.from([4, 4], [2, 2]);
 
-      var p = new Point(0,0);
+      var p = new Point(0, 0);
       var compare = new SweepLineCompareFunction(p);
       compare.event = s1.start;
       tree.add(s1, compare: compare);
