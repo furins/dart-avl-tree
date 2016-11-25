@@ -684,6 +684,14 @@ class AvlTree<T> {
       withEquivalenceClasses: _withEquivalenceClasses);
 
   /**
+   * Returns an iterable of all values traversing the tree
+   * in reverse order. See [inorder] for details.
+   */
+  Iterable<dynamic> get inReverseOrder =>
+      new _InorderIterable.fromRoot(this._root,
+          withEquivalenceClasses: _withEquivalenceClasses, reverse: true);
+
+  /**
    * Returns an iterable
    *  of the values starting with the first
    * node which is equal according to [reference] and consisting
@@ -711,6 +719,22 @@ class AvlTree<T> {
     } else {
       return new _InorderIterable.fromNode(n,
           withEquivalenceClasses: _withEquivalenceClasses).skip(1);
+    }
+  }
+
+  /**
+   * Returns an iterable traversing the values less than or equal to
+   * [reference] in reverse order, so that [reference] is first. See
+   * [inorderEqualOrLarger] for details.
+   */
+  Iterable<dynamic> inorderEqualOrSmaller(reference) {
+    var n = _rightNeighbourNode(reference);
+    if (n == null) {
+      return inReverseOrder;
+    } else {
+      return new _InorderIterable.fromNode(n,
+              withEquivalenceClasses: _withEquivalenceClasses, reverse: true)
+          .skip(1);
     }
   }
 
@@ -903,13 +927,20 @@ class _InorderIterator implements Iterator {
   var cursor = null;
   bool isFirst = true;
   final bool withEquivalenceClasses;
-  _InorderIterator.fromRoot(root, {this.withEquivalenceClasses: false}) {
+  final bool reverse;
+  _InorderIterator.fromRoot(root,
+      {this.withEquivalenceClasses: false, this.reverse: false}) {
     cursor = root;
     if (cursor == null) return;
-    while (cursor.left != null) cursor = cursor.left;
+    while (true) {
+      var child = reverse ? cursor.right : cursor.left;
+      if (child == null) return;
+      cursor = child;
+    }
   }
 
-  _InorderIterator.fromNode(node, {this.withEquivalenceClasses: false}) {
+  _InorderIterator.fromNode(node,
+      {this.withEquivalenceClasses: false, this.reverse: false}) {
     cursor = node;
   }
 
@@ -928,21 +959,26 @@ class _InorderIterator implements Iterator {
       isFirst = false;
       return true;
     }
-    if (cursor.right != null) {
-      cursor = cursor.right;
-      while (cursor.left != null) cursor = cursor.left;
-      return true;
+    var child = reverse ? cursor.left : cursor.right;
+    if (child != null) {
+      cursor = child;
+      while (true) {
+        child = reverse ? cursor.right : cursor.left;
+        if (child == null) return true;
+        cursor = child;
+      }
     } else {
       while (true) {
-        if (cursor.parent == null) {
+        var parent = cursor.parent;
+        if (parent == null) {
           cursor = null;
           return false;
         }
-        if (cursor.parent.left == cursor) {
-          cursor = cursor.parent;
+        if ((reverse ? parent.right : parent.left) == cursor) {
+          cursor = parent;
           return true;
         }
-        cursor = cursor.parent;
+        cursor = parent;
       }
     }
   }
@@ -951,13 +987,15 @@ class _InorderIterator implements Iterator {
 class _InorderIterable extends Object with IterableMixin implements Iterable {
   Iterator _iterator;
 
-  _InorderIterable.fromRoot(_AvlTreeNode root, {withEquivalenceClasses: false})
+  _InorderIterable.fromRoot(_AvlTreeNode root,
+      {withEquivalenceClasses: false, reverse: false})
       : _iterator = new _InorderIterator.fromRoot(root,
-            withEquivalenceClasses: withEquivalenceClasses);
+            withEquivalenceClasses: withEquivalenceClasses, reverse: reverse);
 
-  _InorderIterable.fromNode(_AvlTreeNode node, {withEquivalenceClasses: false})
+  _InorderIterable.fromNode(_AvlTreeNode node,
+      {withEquivalenceClasses: false, reverse: false})
       : _iterator = new _InorderIterator.fromNode(node,
-            withEquivalenceClasses: withEquivalenceClasses);
+            withEquivalenceClasses: withEquivalenceClasses, reverse: reverse);
 
   Iterator get iterator => _iterator;
 }

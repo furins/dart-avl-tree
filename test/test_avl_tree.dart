@@ -124,7 +124,7 @@ main() {
   });
 
   /* ------------------------------------------------------------------- */
-  group("balance and integriy -", () {
+  group("balance and integrity -", () {
     ensureBalanceAndConsistency(node) {
       if (node == null) return;
       var lh = node.left == null ? 0 : node.left.height;
@@ -205,10 +205,11 @@ main() {
   });
 
   /* ------------------------------------------------------------------- */
-  group("inorder iterator -", () {
+  group("inorder and inReverseOrder iterators -", () {
     test("of an empty tree", () {
       var tree = new AvlTree<int>();
       expect(tree.inorder.isEmpty, true);
+      expect(tree.inReverseOrder.isEmpty, true);
     });
 
     test("no equivalence classe - one element ", () {
@@ -226,6 +227,12 @@ main() {
       for (int i = 0; i < 10; i++) {
         expect(inorder[i], i);
       }
+
+      var inReverseOrder = tree.inReverseOrder.toList();
+      expect(inReverseOrder.length, 10);
+      for (int i = 0; i < 10; i++) {
+        expect(inReverseOrder[i], 9 - i);
+      }
     });
 
     test("with equivalence classes", () {
@@ -242,13 +249,21 @@ main() {
       expect(seq[1].toSet(), equals(["bbb", "bBb", "BBB"].toSet()));
       expect(seq[2], ["zzz"]);
     });
+
+    test("correct order", () {
+      var tree = new AvlTree<int>();
+      tree.addAll([4, 2, 1, 8]);
+      expect(tree.inorder.toList(), equals([1, 2, 4, 8]));
+      expect(tree.inReverseOrder.toList(), equals([8, 4, 2, 1]));
+    });
   });
 
   /* ------------------------------------------------------------------- */
-  group("inorderEqualOrLarger -", () {
+  group("inorderEqualOrLarger and inorderEqualOrSmaller -", () {
     test("of an empty tree is empty", () {
       var tree = new AvlTree<int>();
       expect(tree.inorderEqualOrLarger(0).isEmpty, true);
+      expect(tree.inorderEqualOrSmaller(0).isEmpty, true);
     });
 
     test("should work for values in the tree ", () {
@@ -260,14 +275,29 @@ main() {
       expect(tree.inorderEqualOrLarger(3).toList(), equals([3, 4, 5]));
       expect(tree.inorderEqualOrLarger(4).toList(), equals([4, 5]));
       expect(tree.inorderEqualOrLarger(5).toList(), equals([5]));
+
+      expect(tree.inorderEqualOrSmaller(0).toList(), equals([0]));
+      expect(tree.inorderEqualOrSmaller(1).toList(), equals([1, 0]));
+      expect(tree.inorderEqualOrSmaller(2).toList(), equals([2, 1, 0]));
+      expect(tree.inorderEqualOrSmaller(3).toList(), equals([3, 2, 1, 0]));
+      expect(tree.inorderEqualOrSmaller(4).toList(), equals([4, 3, 2, 1, 0]));
+      expect(tree.inorderEqualOrSmaller(5).toList(), equals([5, 4, 3, 2, 1, 0]));
     });
 
     test("should work for values not in the tree ", () {
       var tree = new AvlTree<int>();
-      tree.addAll([0, 1, 2, 3, 4, 5]);
+      tree.addAll([0, 1, 2, 3, 5, 6]);
       expect(
-          tree.inorderEqualOrLarger(-1).toList(), equals([0, 1, 2, 3, 4, 5]));
-      expect(tree.inorderEqualOrLarger(6).isEmpty, true);
+          tree.inorderEqualOrLarger(-1).toList(), equals([0, 1, 2, 3, 5, 6]));
+      expect(
+          tree.inorderEqualOrLarger(4).toList(), equals([5, 6]));
+      expect(tree.inorderEqualOrLarger(7).isEmpty, true);
+
+      expect(
+          tree.inorderEqualOrSmaller(7).toList(), equals([6, 5, 3, 2, 1, 0]));
+      expect(
+          tree.inorderEqualOrSmaller(4).toList(), equals([3, 2, 1, 0]));
+      expect(tree.inorderEqualOrSmaller(-1).isEmpty, true);
     });
 
     test("should work with a order-function instead of a value", () {
