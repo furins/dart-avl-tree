@@ -2,11 +2,13 @@ name:  avl_tree
 description: >
    An implementation of an AVL tree (a balanced binary search tree)
 
-author: Karl Guggisberg <karl.guggisberg@guggis.ch>
-version: 0.2.0
+authors: 
+  - Karl Guggisberg <karl.guggisberg@guggis.ch>
+  - stewbasic <https://github.com/stewbasic>
+
+version: 0.2.0+1
 homepage: https://github.com/Gubaer/dart-avl-tree.git
 documentation: http://gubaer.github.io/dart-avl-tree/
-
 
 dev_dependencies:
   test: "^0.12.3"
