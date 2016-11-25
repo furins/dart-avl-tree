@@ -1,104 +1,187 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>leftNeighbour method - AvlTree class - avl_tree library - Dart API</title>
-    <!-- required because all the links are pseudo-absolute -->
-    <base href="../..">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="API docs for the leftNeighbour method from the AvlTree class, for the Dart programming language.">
+  <title>leftNeighbour method - AvlTree class - avl_tree library - Dart API</title>
+  <!-- required because all the links are pseudo-absolute -->
+  <base href="../..">
 
-    <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro|Roboto:500,400italic,300,400' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" href="const/prettify.css">
-    <link rel="stylesheet" href="const/css/bootstrap.min.css">
-    <link rel="stylesheet" href="const/css/bootstrap-theme.min.css">
-    <link rel="stylesheet" href="const/styles.css">
+  <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Source+Code+Pro|Roboto:500,400italic,300,400' type='text/css'>
+  <link rel="stylesheet" href="static-assets/prettify.css">
+  <link rel="stylesheet" href="static-assets/css/bootstrap.min.css">
+  <link rel="stylesheet" href="static-assets/styles.css">
+  <link rel="icon" href="static-assets/favicon.png">
 
-    <meta name="description" content="API docs for the leftNeighbour method from the AvlTree class, for the Dart programming language.">
-    <!-- Do not remove placeholder -->
-    <!-- Header Placeholder -->
+  <!-- Do not remove placeholder -->
+  <!-- Header Placeholder -->
 </head>
 
 <body>
 
+<div id="overlay-under-drawer"></div>
+
 <header class="container-fluid" id="title">
-    <nav class="navbar navbar-fixed-top">
-        <div class="container">
-                <ol class="breadcrumbs gt-separated">
-                    <li><a href="index.html">avl_tree</a></li>
-                    <li><a href="avl_tree/index.html">avl_tree</a></li>
-                    <li><a href="avl_tree/AvlTree_class.html">AvlTree</a></li>
-                    <li><a href="avl_tree/AvlTree/leftNeighbour.html">leftNeighbour</a></li>
-                </ol>
-        </div>
-    </nav>
+  <nav class="navbar navbar-fixed-top">
     <div class="container">
+      <div class="row">
+        <div class="col-sm-12 contents">
+          <button id="sidenav-left-toggle" type="button">&nbsp;</button>
+          <ol class="breadcrumbs gt-separated hidden-xs">
+            <li><a href="index.html">avl_tree</a></li>
+            <li><a href="avl_tree/avl_tree-library.html">avl_tree</a></li>
+            <li><a href="avl_tree/AvlTree-class.html">AvlTree</a></li>
+            <li class="self-crumb">leftNeighbour</li>
+          </ol>
+          <div class="self-name">leftNeighbour</div>
+          <form class="search navbar-right" role="search">
+            <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+          </form>
+        </div> <!-- /col -->
+      </div> <!-- /row -->
+    </div> <!-- /container -->
+  </nav>
+
+  <div class="container masthead">
+    <div class="row">
+      <div class="col-sm-12 contents">
+        <ol class="breadcrumbs gt-separated visible-xs">
+          <li><a href="index.html">avl_tree</a></li>
+          <li><a href="avl_tree/avl_tree-library.html">avl_tree</a></li>
+          <li><a href="avl_tree/AvlTree-class.html">AvlTree</a></li>
+          <li class="self-crumb">leftNeighbour</li>
+        </ol>
         <div class="title-description">
-            <h1 class="title">
-                <span class="">leftNeighbour</span> <span class="kind">method</span>
-            </h1>
-            <p>
-                Returns the largest value in the tree which is smaller than
-reference.
-            </p>
+          <h1 class="title">
+            <span class="kind">method</span> leftNeighbour
+          </h1>
         </div>
-    </div>
+        <ul class="subnav">
+          <li><a href="avl_tree/AvlTree/leftNeighbour.html#source">Source</a></li>
+        </ul>
+      </div> <!-- /col -->
+    </div> <!-- /row -->
+  </div> <!-- /container -->
+
 </header>
 
-<div class="container">
+<div class="container body">
+  <div class="row">
 
-    <section class="multi-line-signature">
-            <span class="returntype">dynamic</span>
-            <span class="name ">leftNeighbour</span>(
-            <br>
-            <div class="parameters">
-                <span class="parameter" id="leftNeighbour-param-reference"><span class="parameter-name">reference</span></span>
-            </div>
-            )    </section>
+  <div class="col-xs-6 col-sm-3 col-md-2 sidebar sidebar-offcanvas-left">
+    <h5><a href="index.html">avl_tree</a></h5>
+    <h5><a href="avl_tree/avl_tree-library.html">avl_tree</a></h5>
+    <h5><a href="avl_tree/AvlTree-class.html">AvlTree</a></h5>
 
-    <section class="desc markdown">
+    <ol>
     
-        <p>Returns the largest value in the tree which is smaller than
-reference.</p>
-<p>reference is either a value of type T or a function
+    
+    
+      <li class="section-title"><a href="avl_tree/AvlTree-class.html#constructors">Constructors</a></li>
+      <li><a href="avl_tree/AvlTree/AvlTree.html">AvlTree</a></li>
+    
+      <li class="section-title">
+        <a href="avl_tree/AvlTree-class.html#instance-properties">Properties</a>
+      </li>
+      <li class="inherited"><a href="avl_tree/AvlTree/hashCode.html">hashCode</a></li>
+      <li><a href="avl_tree/AvlTree/inorder.html">inorder</a></li>
+      <li><a href="avl_tree/AvlTree/inReverseOrder.html">inReverseOrder</a></li>
+      <li><a href="avl_tree/AvlTree/isEmpty.html">isEmpty</a></li>
+      <li><a href="avl_tree/AvlTree/largest.html">largest</a></li>
+      <li><a href="avl_tree/AvlTree/length.html">length</a></li>
+      <li class="inherited"><a href="avl_tree/AvlTree/runtimeType.html">runtimeType</a></li>
+      <li><a href="avl_tree/AvlTree/smallest.html">smallest</a></li>
+    
+      <li class="section-title inherited"><a href="avl_tree/AvlTree-class.html#operators">Operators</a></li>
+      <li class="inherited"><a href="avl_tree/AvlTree/operator_equals.html">operator ==</a></li>
+    
+      <li class="section-title"><a href="avl_tree/AvlTree-class.html#instance-methods">Methods</a></li>
+      <li><a href="avl_tree/AvlTree/add.html">add</a></li>
+      <li><a href="avl_tree/AvlTree/addAll.html">addAll</a></li>
+      <li><a href="avl_tree/AvlTree/contains.html">contains</a></li>
+      <li><a href="avl_tree/AvlTree/inorderEqualOrLarger.html">inorderEqualOrLarger</a></li>
+      <li><a href="avl_tree/AvlTree/inorderEqualOrSmaller.html">inorderEqualOrSmaller</a></li>
+      <li><a href="avl_tree/AvlTree/leftNeighbour.html">leftNeighbour</a></li>
+      <li class="inherited"><a href="avl_tree/AvlTree/noSuchMethod.html">noSuchMethod</a></li>
+      <li><a href="avl_tree/AvlTree/remove.html">remove</a></li>
+      <li><a href="avl_tree/AvlTree/rightNeighbour.html">rightNeighbour</a></li>
+      <li class="inherited"><a href="avl_tree/AvlTree/toString.html">toString</a></li>
+    </ol>
+
+  </div><!--/.sidebar-offcanvas-->
+
+  <div class="col-xs-12 col-sm-9 col-md-8 main-content">
+    <section class="multi-line-signature">
+      <span class="returntype">dynamic</span>
+      <span class="name ">leftNeighbour</span>(<wbr><span class="parameter" id="leftNeighbour-param-reference"><span class="parameter-name">reference</span></span>)
+    </section>
+    <section class="desc markdown">
+      <p>Returns the largest value in the tree which is smaller than
+<code>reference</code>.</p>
+<p><code>reference</code> is either a value of type <code>T</code> or a function
 <code>int order(T other)</code> which returns -1, 0, or 1 depending on
 wether the value <code>other</code> in a tree node is smaller, equal,
 or larger as the reference point.</p>
-<p>The standard case is to invoke it with a value of type T. The
+<p>The standard case is to invoke it with a value of type <code>T</code>. The
 second option is useful in special usage scenarios only, see notes
 in the class description.</p>
 <p>The returned value is either:</p><ul><li><code>null</code>, if this tree is empty</li><li>
-<p>a single value of type T, if this tree doesn't
+<p>a single value of type <code>T</code>, if this tree doesn't
   support equivalence classes</p></li><li>
-<p>a list of type <code class="prettyprint">ListT</code>, if this tree does
+<p>a list of type <code>List[T]</code>, if this tree does
   support equivalence classes</p></li></ul>
-    
     </section>
     
+    <section class="summary source-code" id="source">
+      <h2><span>Source</span> </h2>
+      <pre class="prettyprint language-dart">dynamic leftNeighbour(reference) {
+  var n = _leftNeighbourNode(reference);
+  if (n == null) return null;
+  if (_withEquivalenceClasses) {
+    return n.values;
+  } else {
+    return n.values.first;
+  }
+}</pre>
+    </section>
+
+  </div> <!-- /.main-content -->
+
+</div> <!-- row -->
 </div> <!-- container -->
 
 <footer>
-    <div class="container-fluid">
-        <div class="container">
-            <!-- TODO: change to ordered list -->
-            <p class="text-center">
-                <span class="version">avl_tree 0.1.1</span> |
-                <span class="copyright">
-                    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>
-                </span>
-            </p>
-        </div>
+  <div class="container-fluid">
+    <div class="container">
+      <p class="text-center">
+        <span class="no-break">
+          avl_tree 0.2.0
+        </span>
+        &bull;
+        <span class="no-break">
+          <a href="https://www.dartlang.org">
+            <img src="static-assets/favicon.png" alt="Dart" title="Dart" width="16" height="16">
+          </a>
+        </span>
+        &bull;
+        <span class="copyright no-break">
+          <a href="http://creativecommons.org/licenses/by-sa/4.0/">cc license</a>
+        </span>
+      </p>
     </div>
+  </div>
 </footer>
 
-<script src="const/prettify.js"></script>
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        prettyPrint();
-    });
-</script>
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="static-assets/typeahead.bundle.min.js"></script>
+<script src="static-assets/prettify.js"></script>
+<script src="static-assets/URI.js"></script>
+<script src="static-assets/script.js"></script>
 <!-- Do not remove placeholder -->
 <!-- Footer Placeholder -->
+
 </body>
 
 </html>

@@ -1,95 +1,233 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>add method - AvlTree class - avl_tree library - Dart API</title>
-    <!-- required because all the links are pseudo-absolute -->
-    <base href="../..">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="API docs for the add method from the AvlTree class, for the Dart programming language.">
+  <title>add method - AvlTree class - avl_tree library - Dart API</title>
+  <!-- required because all the links are pseudo-absolute -->
+  <base href="../..">
 
-    <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro|Roboto:500,400italic,300,400' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" href="const/prettify.css">
-    <link rel="stylesheet" href="const/css/bootstrap.min.css">
-    <link rel="stylesheet" href="const/css/bootstrap-theme.min.css">
-    <link rel="stylesheet" href="const/styles.css">
+  <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Source+Code+Pro|Roboto:500,400italic,300,400' type='text/css'>
+  <link rel="stylesheet" href="static-assets/prettify.css">
+  <link rel="stylesheet" href="static-assets/css/bootstrap.min.css">
+  <link rel="stylesheet" href="static-assets/styles.css">
+  <link rel="icon" href="static-assets/favicon.png">
 
-    <meta name="description" content="API docs for the add method from the AvlTree class, for the Dart programming language.">
-    <!-- Do not remove placeholder -->
-    <!-- Header Placeholder -->
+  <!-- Do not remove placeholder -->
+  <!-- Header Placeholder -->
 </head>
 
 <body>
 
+<div id="overlay-under-drawer"></div>
+
 <header class="container-fluid" id="title">
-    <nav class="navbar navbar-fixed-top">
-        <div class="container">
-                <ol class="breadcrumbs gt-separated">
-                    <li><a href="index.html">avl_tree</a></li>
-                    <li><a href="avl_tree/index.html">avl_tree</a></li>
-                    <li><a href="avl_tree/AvlTree_class.html">AvlTree</a></li>
-                    <li><a href="avl_tree/AvlTree/add.html">add</a></li>
-                </ol>
-        </div>
-    </nav>
+  <nav class="navbar navbar-fixed-top">
     <div class="container">
+      <div class="row">
+        <div class="col-sm-12 contents">
+          <button id="sidenav-left-toggle" type="button">&nbsp;</button>
+          <ol class="breadcrumbs gt-separated hidden-xs">
+            <li><a href="index.html">avl_tree</a></li>
+            <li><a href="avl_tree/avl_tree-library.html">avl_tree</a></li>
+            <li><a href="avl_tree/AvlTree-class.html">AvlTree</a></li>
+            <li class="self-crumb">add</li>
+          </ol>
+          <div class="self-name">add</div>
+          <form class="search navbar-right" role="search">
+            <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+          </form>
+        </div> <!-- /col -->
+      </div> <!-- /row -->
+    </div> <!-- /container -->
+  </nav>
+
+  <div class="container masthead">
+    <div class="row">
+      <div class="col-sm-12 contents">
+        <ol class="breadcrumbs gt-separated visible-xs">
+          <li><a href="index.html">avl_tree</a></li>
+          <li><a href="avl_tree/avl_tree-library.html">avl_tree</a></li>
+          <li><a href="avl_tree/AvlTree-class.html">AvlTree</a></li>
+          <li class="self-crumb">add</li>
+        </ol>
         <div class="title-description">
-            <h1 class="title">
-                <span class="">add</span> <span class="kind">method</span>
-            </h1>
-            <p>
-                Adds a value to the tree.
-            </p>
+          <h1 class="title">
+            <span class="kind">method</span> add
+          </h1>
         </div>
-    </div>
+        <ul class="subnav">
+          <li><a href="avl_tree/AvlTree/add.html#source">Source</a></li>
+        </ul>
+      </div> <!-- /col -->
+    </div> <!-- /row -->
+  </div> <!-- /container -->
+
 </header>
 
-<div class="container">
+<div class="container body">
+  <div class="row">
 
-    <section class="multi-line-signature">
-            <span class="returntype">void</span>
-            <span class="name ">add</span>(
-            <br>
-            <div class="parameters">
-                <span class="parameter" id="add-param-value"><span class="type-annotation">T</span> <span class="parameter-name">value</span></span>,<br>{<span class="parameter" id="add-param-compare"><span class="type-annotation">int</span> <span class="parameter-name">compare</span>(<span class="parameter" id="compare-param-v1"><span class="type-annotation">T</span> <span class="parameter-name">v1</span></span>, <span class="parameter" id="compare-param-v2"><span class="type-annotation">T</span> <span class="parameter-name">v2</span></span>): <span class="default-value">null</span></span>}
-            </div>
-            )    </section>
+  <div class="col-xs-6 col-sm-3 col-md-2 sidebar sidebar-offcanvas-left">
+    <h5><a href="index.html">avl_tree</a></h5>
+    <h5><a href="avl_tree/avl_tree-library.html">avl_tree</a></h5>
+    <h5><a href="avl_tree/AvlTree-class.html">AvlTree</a></h5>
 
-    <section class="desc markdown">
+    <ol>
     
-        <p>Adds a value to the tree.</p>
-<p>If supplied, compare is used to compare value with values already
+    
+    
+      <li class="section-title"><a href="avl_tree/AvlTree-class.html#constructors">Constructors</a></li>
+      <li><a href="avl_tree/AvlTree/AvlTree.html">AvlTree</a></li>
+    
+      <li class="section-title">
+        <a href="avl_tree/AvlTree-class.html#instance-properties">Properties</a>
+      </li>
+      <li class="inherited"><a href="avl_tree/AvlTree/hashCode.html">hashCode</a></li>
+      <li><a href="avl_tree/AvlTree/inorder.html">inorder</a></li>
+      <li><a href="avl_tree/AvlTree/inReverseOrder.html">inReverseOrder</a></li>
+      <li><a href="avl_tree/AvlTree/isEmpty.html">isEmpty</a></li>
+      <li><a href="avl_tree/AvlTree/largest.html">largest</a></li>
+      <li><a href="avl_tree/AvlTree/length.html">length</a></li>
+      <li class="inherited"><a href="avl_tree/AvlTree/runtimeType.html">runtimeType</a></li>
+      <li><a href="avl_tree/AvlTree/smallest.html">smallest</a></li>
+    
+      <li class="section-title inherited"><a href="avl_tree/AvlTree-class.html#operators">Operators</a></li>
+      <li class="inherited"><a href="avl_tree/AvlTree/operator_equals.html">operator ==</a></li>
+    
+      <li class="section-title"><a href="avl_tree/AvlTree-class.html#instance-methods">Methods</a></li>
+      <li><a href="avl_tree/AvlTree/add.html">add</a></li>
+      <li><a href="avl_tree/AvlTree/addAll.html">addAll</a></li>
+      <li><a href="avl_tree/AvlTree/contains.html">contains</a></li>
+      <li><a href="avl_tree/AvlTree/inorderEqualOrLarger.html">inorderEqualOrLarger</a></li>
+      <li><a href="avl_tree/AvlTree/inorderEqualOrSmaller.html">inorderEqualOrSmaller</a></li>
+      <li><a href="avl_tree/AvlTree/leftNeighbour.html">leftNeighbour</a></li>
+      <li class="inherited"><a href="avl_tree/AvlTree/noSuchMethod.html">noSuchMethod</a></li>
+      <li><a href="avl_tree/AvlTree/remove.html">remove</a></li>
+      <li><a href="avl_tree/AvlTree/rightNeighbour.html">rightNeighbour</a></li>
+      <li class="inherited"><a href="avl_tree/AvlTree/toString.html">toString</a></li>
+    </ol>
+
+  </div><!--/.sidebar-offcanvas-->
+
+  <div class="col-xs-12 col-sm-9 col-md-8 main-content">
+    <section class="multi-line-signature">
+      <span class="returntype">void</span>
+      <span class="name ">add</span>(<wbr><span class="parameter" id="add-param-value"><span class="type-annotation">T</span> <span class="parameter-name">value</span>, {</span> <span class="parameter" id="add-param-compare"><span class="type-annotation">int</span> <span class="parameter-name">compare</span>(<span class="parameter" id="compare-param-v1"><span class="type-annotation">T</span> <span class="parameter-name">v1</span>, </span> <span class="parameter" id="compare-param-v2"><span class="type-annotation">T</span> <span class="parameter-name">v2</span></span>): <span class="default-value">null</span></span> })
+    </section>
+    <section class="desc markdown">
+      <p>Adds a <code>value</code> to the tree.</p>
+<p>If supplied, <code>compare</code> is used to compare <code>value</code> with values already
 present in the tree.
-compare must be consistent with the ordering of values already
+<code>compare</code> must be consistent with the ordering of values already
 present in this tree, but it may supply a more efficient implementation
 of the comparison operation for this very invocation of <a href="avl_tree/AvlTree/add.html">add</a>.</p>
-    
     </section>
     
+    <section class="summary source-code" id="source">
+      <h2><span>Source</span> </h2>
+      <pre class="prettyprint language-dart">void add(T value, {int compare(T v1, T v2): null}) {
+  var localCompare;
+  if (compare == null) {
+    localCompare = this._compare;
+  } else {
+    localCompare = compare;
+  }
+
+  var newNode = new _AvlTreeNode(value, null);
+
+  &#47;&#47; If root is null, assign
+  if (_root == null) {
+    _root = newNode;
+    _size++;
+  } else {
+    var node = _root;
+    loop: while (node != null) {
+      var c = localCompare(value, node.compareValue);
+      switch (c) {
+        case -1:
+          if (node.left != null) {
+            node = node.left;
+            continue;
+          }
+          &#47;&#47; New left node
+          node.left = newNode;
+          newNode.parent = node;
+          _size++;
+          break loop;
+
+        case 1:
+          if (node.right != null) {
+            node = node.right;
+            continue;
+          }
+          &#47;&#47; New right node
+          node.right = newNode;
+          newNode.parent = node;
+          _size++;
+          break loop;
+
+        case 0:
+          if (!_withEquivalenceClasses) {
+            throw new StateError(
+                &quot;can&#39;t add value, value already present: $value&quot;);
+          }
+          if (node.containsIdentical(value)) {
+            throw new StateError(
+                &quot;can&#39;t add value, value already present: $value&quot;);
+          }
+          node.addEquivalent(value);
+          _size++;
+          newNode = null;
+          break loop;
+      }
+    }
+  }
+
+  _forEachAncestor(newNode, (n) {
+    n._updateHeight();
+    _balanceAfterInsert(n);
+  });
+}</pre>
+    </section>
+
+  </div> <!-- /.main-content -->
+
+</div> <!-- row -->
 </div> <!-- container -->
 
 <footer>
-    <div class="container-fluid">
-        <div class="container">
-            <!-- TODO: change to ordered list -->
-            <p class="text-center">
-                <span class="version">avl_tree 0.1.1</span> |
-                <span class="copyright">
-                    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>
-                </span>
-            </p>
-        </div>
+  <div class="container-fluid">
+    <div class="container">
+      <p class="text-center">
+        <span class="no-break">
+          avl_tree 0.2.0
+        </span>
+        &bull;
+        <span class="no-break">
+          <a href="https://www.dartlang.org">
+            <img src="static-assets/favicon.png" alt="Dart" title="Dart" width="16" height="16">
+          </a>
+        </span>
+        &bull;
+        <span class="copyright no-break">
+          <a href="http://creativecommons.org/licenses/by-sa/4.0/">cc license</a>
+        </span>
+      </p>
     </div>
+  </div>
 </footer>
 
-<script src="const/prettify.js"></script>
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        prettyPrint();
-    });
-</script>
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="static-assets/typeahead.bundle.min.js"></script>
+<script src="static-assets/prettify.js"></script>
+<script src="static-assets/URI.js"></script>
+<script src="static-assets/script.js"></script>
 <!-- Do not remove placeholder -->
 <!-- Footer Placeholder -->
+
 </body>
 
 </html>

@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="API docs for the AvlTree class from the avl_tree library, for the Dart programming language.">
+  <title>AvlTree class - avl_tree library - Dart API</title>
+  <!-- required because all the links are pseudo-absolute -->
+  <base href="..">
+
+  <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Source+Code+Pro|Roboto:500,400italic,300,400' type='text/css'>
+  <link rel="stylesheet" href="static-assets/prettify.css">
+  <link rel="stylesheet" href="static-assets/css/bootstrap.min.css">
+  <link rel="stylesheet" href="static-assets/styles.css">
+  <link rel="icon" href="static-assets/favicon.png">
+
+  <!-- Do not remove placeholder -->
+  <!-- Header Placeholder -->
+</head>
+
+<body>
+
+<div id="overlay-under-drawer"></div>
+
+<header class="container-fluid" id="title">
+  <nav class="navbar navbar-fixed-top">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12 contents">
+          <button id="sidenav-left-toggle" type="button">&nbsp;</button>
+          <ol class="breadcrumbs gt-separated hidden-xs">
+            <li><a href="index.html">avl_tree</a></li>
+            <li><a href="avl_tree/avl_tree-library.html">avl_tree</a></li>
+            <li class="self-crumb">AvlTree</li>
+          </ol>
+          <div class="self-name">AvlTree</div>
+          <form class="search navbar-right" role="search">
+            <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+          </form>
+        </div> <!-- /col -->
+      </div> <!-- /row -->
+    </div> <!-- /container -->
+  </nav>
+
+  <div class="container masthead">
+    <div class="row">
+      <div class="col-sm-12 contents">
+        <ol class="breadcrumbs gt-separated visible-xs">
+          <li><a href="index.html">avl_tree</a></li>
+          <li><a href="avl_tree/avl_tree-library.html">avl_tree</a></li>
+          <li class="self-crumb">AvlTree</li>
+        </ol>
+        <div class="title-description">
+          <h1 class="title">
+            <span class="kind">class</span> AvlTree&lt;T&gt;
+          </h1>
+        </div>
+        <ul class="subnav">
+          <li><a href="avl_tree/AvlTree-class.html#instance-properties">Properties</a></li>
+          <li><a href="avl_tree/AvlTree-class.html#constructors">Constructors</a></li>
+          <li><a href="avl_tree/AvlTree-class.html#operators">Operators</a></li>
+          <li><a href="avl_tree/AvlTree-class.html#instance-methods">Methods</a></li>
+        </ul>
+      </div> <!-- /col -->
+    </div> <!-- /row -->
+  </div> <!-- /container -->
+
+</header>
+
+<div class="container body">
+  <div class="row">
+
+  <div class="col-xs-6 col-sm-3 col-md-2 sidebar sidebar-offcanvas-left">
+    <h5><a href="index.html">avl_tree</a></h5>
+    <h5><a href="avl_tree/avl_tree-library.html">avl_tree</a></h5>
+
+    <ol>
+    
+    
+    
+    
+    
+      <li class="section-title"><a href="avl_tree/avl_tree-library.html#classes">Classes</a></li>
+      <li><a href="avl_tree/AvlTree-class.html">AvlTree</a></li>
+    
+    </ol>
+  </div>
+
+  <div class="col-xs-12 col-sm-9 col-md-8 main-content">
+
+    <section class="desc markdown">
+      <p><a href="avl_tree/AvlTree-class.html">AvlTree</a> is an implementation of a <a href="http://en.wikipedia.org/wiki/AVL_tree">AVL Tree</a>,a self-balancing binary search-tree.</p>
+<p>The implementation is basically a port from the <a href="https://code.google.com/p/java-algorithms-implementation/">implementation in Java
+by Justin Wheterell</a>.</p>
+<p>This implementation provides two custom features usually not present in
+AVL trees:</p><ol><li>
+<p>The methods <code>add</code>, <code>remove</code>, or <code>contains</code> not only accept a value to be
+   added, removed, or tested,
+   but optionally also a compare function to be used in this very invocation
+   only.
+   This comes in handy, if a more efficient compare function can be
+   used in a specific invocation. Example: the dynamically changing search
+   tree of intersecting line segments in the
+   <a href="http://en.wikipedia.org/wiki/Bentley%E2%80%93Ottmann_algorithm">Bentley-Ottman-Algorithm</a>.</p></li><li>
+<p>The tree can (optionally) store multiple values which are equal with
+   respect
+   to the tree ordering, but not identical with respect to Darts <code>identical()</code>
+   function. One application is again the implementation of the Y-structure
+   in the <a href="http://en.wikipedia.org/wiki/Bentley%E2%80%93Ottmann_algorithm">Bentley-Ottman-Algorithm</a>,
+   where multiple overlapping line segments can be handled as equivalence
+   class of line segments.</p></li></ol>
+<h1>A simple tree of ints</h1>
+<pre class="prettyprint language-dart"><code> // create a tree, and use some methods, use the standard
+ // int.compareTo function for ordering
+ var tree = new AvlTree&lt;int&gt;();
+ tree.addAll([0,1,2]);
+ print(tree.inorder.toList());  // -&gt; [0,1,2]
+ tree.remove(2);
+ print(tree.inorder.toList());  // -&gt; [0,1]
+ print(tree.contains(0));       // true
+</code></pre>
+<h1>A tree of strings  in reverse lexicographic order</h1>
+<pre class="prettyprint language-dart"><code>// a balanced tree of strings, ordered in reverse lexicographical
+// order
+var order = (String s1, String s2) =&gt; s2.compareTo(s1);
+var tree = new AvlTree&lt;String&gt;(compare: order);
+tree.addAll(["aaa", "zzz"]);
+print(tree.inorder.toList);     // ["zzz", "aaa"]
+</code></pre>
+<h1>A tree of strings, lowercase ordering, with equivalence classes</h1>
+<pre class="prettyprint language-dart"><code>lowerCaseCompare(s,t) =&gt; s.toLowerCase().compareTo(t.toLowerCase());
+var tree = new AvlTree&lt;String&gt;(compare:lowerCaseCompare,
+    withEquivalenceClasses: true);
+tree.addAll(["aaa", "zzz", "AAA"]);
+print(tree.smallest);         // -&gt; ["aaa", "AAA"]
+</code></pre>
+    </section>
+    
+
+
+
+
+    <section class="summary offset-anchor" id="constructors">
+      <h2>Constructors</h2>
+
+      <dl class="constructor-summary-list">
+        <dt id="AvlTree" class="callable">
+          <span class="name"><a href="avl_tree/AvlTree/AvlTree.html">AvlTree</a></span><span class="signature">({<span class="parameter" id="-param-compare"><span class="type-annotation">int</span> <span class="parameter-name">compare</span>(<span class="parameter" id="compare-param-v1"><span class="type-annotation">T</span> <span class="parameter-name">v1</span>, </span> <span class="parameter" id="compare-param-v2"><span class="type-annotation">T</span> <span class="parameter-name">v2</span></span>), </span> <span class="parameter" id="-param-withEquivalenceClasses"><span class="parameter-name">withEquivalenceClasses</span>: <span class="default-value">false</span></span> })</span>
+        </dt>
+        <dd>
+          <p>Creates an AVL tree.</p>
+        </dd>
+      </dl>
+    </section>
+
+    <section class="summary offset-anchor" id="instance-properties">
+      <h2>Properties</h2>
+
+      <dl class="properties">
+        <dt id="hashCode" class="property inherited">
+          <span class="name"><a href="avl_tree/AvlTree/hashCode.html">hashCode</a></span>
+          <span class="signature">&#8594; int</span>
+        </dt>
+        <dd class="inherited">
+          <p>Get a hash code for this object.</p>
+          <div class="features">
+    read-only, inherited
+  </div>
+</dd>
+        <dt id="inorder" class="property">
+          <span class="name"><a href="avl_tree/AvlTree/inorder.html">inorder</a></span>
+          <span class="signature">&#8594; Iterable</span>
+        </dt>
+        <dd>
+          <p>Returns an iterable of all values traversing the tree
+inorder. This is equivalent to an iterable of the
+sorted values in the tree.</p>
+          <div class="features">
+    read-only
+  </div>
+</dd>
+        <dt id="inReverseOrder" class="property">
+          <span class="name"><a href="avl_tree/AvlTree/inReverseOrder.html">inReverseOrder</a></span>
+          <span class="signature">&#8594; Iterable</span>
+        </dt>
+        <dd>
+          <p>Returns an iterable of all values traversing the tree
+in reverse order. See <code>inorder</code> for details.</p>
+          <div class="features">
+    read-only
+  </div>
+</dd>
+        <dt id="isEmpty" class="property">
+          <span class="name"><a href="avl_tree/AvlTree/isEmpty.html">isEmpty</a></span>
+          <span class="signature">&#8594; bool</span>
+        </dt>
+        <dd>
+          <p>Return true if the tree is empty</p>
+          <div class="features">
+    read-only
+  </div>
+</dd>
+        <dt id="largest" class="property">
+          <span class="name"><a href="avl_tree/AvlTree/largest.html">largest</a></span>
+          <span class="signature">&#8594; dynamic</span>
+        </dt>
+        <dd>
+          <p>Returns the largest value in the tree.</p>
+          <div class="features">
+    read-only
+  </div>
+</dd>
+        <dt id="length" class="property">
+          <span class="name"><a href="avl_tree/AvlTree/length.html">length</a></span>
+          <span class="signature">&#8594; int</span>
+        </dt>
+        <dd>
+          <p>returns the size of the tree</p>
+          <div class="features">
+    read-only
+  </div>
+</dd>
+        <dt id="runtimeType" class="property inherited">
+          <span class="name"><a href="avl_tree/AvlTree/runtimeType.html">runtimeType</a></span>
+          <span class="signature">&#8594; Type</span>
+        </dt>
+        <dd class="inherited">
+          <p>A representation of the runtime type of the object.</p>
+          <div class="features">
+    read-only, inherited
+  </div>
+</dd>
+        <dt id="smallest" class="property">
+          <span class="name"><a href="avl_tree/AvlTree/smallest.html">smallest</a></span>
+          <span class="signature">&#8594; dynamic</span>
+        </dt>
+        <dd>
+          <p>Returns the smallest value in the tree.</p>
+          <div class="features">
+    read-only
+  </div>
+</dd>
+      </dl>
+    </section>
+
+    <section class="summary offset-anchor inherited" id="operators">
+      <h2>Operators</h2>
+      <dl class="callables">
+        <dt id="operator ==" class="callable inherited">
+          <span class="name"><a href="avl_tree/AvlTree/operator_equals.html">operator ==</a></span><span class="signature">(<wbr><span class="parameter" id="==-param-other"><span class="parameter-name">other</span></span>)
+            <span class="returntype parameter">&#8594; bool</span>
+          </span>
+        </dt>
+        <dd class="inherited">
+          <p>The equality operator.</p>
+          <div class="features">inherited</div>
+        </dd>
+      </dl>
+    </section>
+
+    <section class="summary offset-anchor" id="instance-methods">
+      <h2>Methods</h2>
+      <dl class="callables">
+        <dt id="add" class="callable">
+          <span class="name"><a href="avl_tree/AvlTree/add.html">add</a></span><span class="signature">(<wbr><span class="parameter" id="add-param-value"><span class="type-annotation">T</span> <span class="parameter-name">value</span>, {</span> <span class="parameter" id="add-param-compare"><span class="type-annotation">int</span> <span class="parameter-name">compare</span>(<span class="parameter" id="compare-param-v1"><span class="type-annotation">T</span> <span class="parameter-name">v1</span>, </span> <span class="parameter" id="compare-param-v2"><span class="type-annotation">T</span> <span class="parameter-name">v2</span></span>): <span class="default-value">null</span></span> })
+            <span class="returntype parameter">&#8594; void</span>
+          </span>
+        </dt>
+        <dd>
+          <p>Adds a <code>value</code> to the tree.</p>
+        </dd>
+        <dt id="addAll" class="callable">
+          <span class="name"><a href="avl_tree/AvlTree/addAll.html">addAll</a></span><span class="signature">(<wbr><span class="parameter" id="addAll-param-values"><span class="type-annotation">Iterable&lt;T&gt;</span> <span class="parameter-name">values</span>, {</span> <span class="parameter" id="addAll-param-compare"><span class="type-annotation">int</span> <span class="parameter-name">compare</span>(<span class="parameter" id="compare-param-v1"><span class="type-annotation">T</span> <span class="parameter-name">v1</span>, </span> <span class="parameter" id="compare-param-v2"><span class="type-annotation">T</span> <span class="parameter-name">v2</span></span>): <span class="default-value">null</span></span> })
+            <span class="returntype parameter">&#8594; void</span>
+          </span>
+        </dt>
+        <dd>
+          <p>Adds the <code>values</code> to the tree.</p>
+        </dd>
+        <dt id="contains" class="callable">
+          <span class="name"><a href="avl_tree/AvlTree/contains.html">contains</a></span><span class="signature">(<wbr><span class="parameter" id="contains-param-value"><span class="type-annotation">T</span> <span class="parameter-name">value</span>, {</span> <span class="parameter" id="contains-param-compare"><span class="type-annotation">int</span> <span class="parameter-name">compare</span>(<span class="parameter" id="compare-param-v1"><span class="type-annotation">T</span> <span class="parameter-name">v1</span>, </span> <span class="parameter" id="compare-param-v2"><span class="type-annotation">T</span> <span class="parameter-name">v2</span></span>): <span class="default-value">null</span></span> })
+            <span class="returntype parameter">&#8594; bool</span>
+          </span>
+        </dt>
+        <dd>
+          <p>Returns true, if the tree contains <code>value</code>.</p>
+        </dd>
+        <dt id="inorderEqualOrLarger" class="callable">
+          <span class="name"><a href="avl_tree/AvlTree/inorderEqualOrLarger.html">inorderEqualOrLarger</a></span><span class="signature">(<wbr><span class="parameter" id="inorderEqualOrLarger-param-reference"><span class="parameter-name">reference</span></span>)
+            <span class="returntype parameter">&#8594; Iterable</span>
+          </span>
+        </dt>
+        <dd>
+          <p>Returns an iterable
+ of the values starting with the first
+node which is equal according to <code>reference</code> and consisting
+of all values equal or larger with respect to <code>reference</code>.</p>
+        </dd>
+        <dt id="inorderEqualOrSmaller" class="callable">
+          <span class="name"><a href="avl_tree/AvlTree/inorderEqualOrSmaller.html">inorderEqualOrSmaller</a></span><span class="signature">(<wbr><span class="parameter" id="inorderEqualOrSmaller-param-reference"><span class="parameter-name">reference</span></span>)
+            <span class="returntype parameter">&#8594; Iterable</span>
+          </span>
+        </dt>
+        <dd>
+          <p>Returns an iterable traversing the values less than or equal to
+<code>reference</code> in reverse order, so that <code>reference</code> is first. See
+<a href="avl_tree/AvlTree/inorderEqualOrLarger.html">inorderEqualOrLarger</a> for details.</p>
+        </dd>
+        <dt id="leftNeighbour" class="callable">
+          <span class="name"><a href="avl_tree/AvlTree/leftNeighbour.html">leftNeighbour</a></span><span class="signature">(<wbr><span class="parameter" id="leftNeighbour-param-reference"><span class="parameter-name">reference</span></span>)
+            <span class="returntype parameter">&#8594; dynamic</span>
+          </span>
+        </dt>
+        <dd>
+          <p>Returns the largest value in the tree which is smaller than
+<code>reference</code>.</p>
+        </dd>
+        <dt id="noSuchMethod" class="callable inherited">
+          <span class="name"><a href="avl_tree/AvlTree/noSuchMethod.html">noSuchMethod</a></span><span class="signature">(<wbr><span class="parameter" id="noSuchMethod-param-invocation"><span class="type-annotation">Invocation</span> <span class="parameter-name">invocation</span></span>)
+            <span class="returntype parameter">&#8594; dynamic</span>
+          </span>
+        </dt>
+        <dd class="inherited">
+          <p>Invoked when a non-existent method or property is accessed.</p>
+          <div class="features">inherited</div>
+        </dd>
+        <dt id="remove" class="callable">
+          <span class="name"><a href="avl_tree/AvlTree/remove.html">remove</a></span><span class="signature">(<wbr><span class="parameter" id="remove-param-value"><span class="type-annotation">T</span> <span class="parameter-name">value</span>, {</span> <span class="parameter" id="remove-param-compare"><span class="type-annotation">int</span> <span class="parameter-name">compare</span>(<span class="parameter" id="compare-param-v1"><span class="type-annotation">T</span> <span class="parameter-name">v1</span>, </span> <span class="parameter" id="compare-param-v2"><span class="type-annotation">T</span> <span class="parameter-name">v2</span></span>): <span class="default-value">null</span></span> })
+            <span class="returntype parameter">&#8594; bool</span>
+          </span>
+        </dt>
+        <dd>
+          <p>Removes the <code>value</code> from the tree.</p>
+        </dd>
+        <dt id="rightNeighbour" class="callable">
+          <span class="name"><a href="avl_tree/AvlTree/rightNeighbour.html">rightNeighbour</a></span><span class="signature">(<wbr><span class="parameter" id="rightNeighbour-param-reference"><span class="parameter-name">reference</span></span>)
+            <span class="returntype parameter">&#8594; dynamic</span>
+          </span>
+        </dt>
+        <dd>
+          <p>Returns the smallest value in the tree which is larger than
+<code>reference</code>.</p>
+        </dd>
+        <dt id="toString" class="callable inherited">
+          <span class="name"><a href="avl_tree/AvlTree/toString.html">toString</a></span><span class="signature">(<wbr>)
+            <span class="returntype parameter">&#8594; String</span>
+          </span>
+        </dt>
+        <dd class="inherited">
+          <p>Returns a string representation of this object.</p>
+          <div class="features">inherited</div>
+        </dd>
+      </dl>
+    </section>
+
+  </div> <!-- /.main-content -->
+
+  <div class="col-xs-6 col-sm-6 col-md-2 sidebar sidebar-offcanvas-right">
+    <h5>AvlTree</h5>
+    <ol>
+    
+    
+    
+      <li class="section-title"><a href="avl_tree/AvlTree-class.html#constructors">Constructors</a></li>
+      <li><a href="avl_tree/AvlTree/AvlTree.html">AvlTree</a></li>
+    
+      <li class="section-title">
+        <a href="avl_tree/AvlTree-class.html#instance-properties">Properties</a>
+      </li>
+      <li class="inherited"><a href="avl_tree/AvlTree/hashCode.html">hashCode</a></li>
+      <li><a href="avl_tree/AvlTree/inorder.html">inorder</a></li>
+      <li><a href="avl_tree/AvlTree/inReverseOrder.html">inReverseOrder</a></li>
+      <li><a href="avl_tree/AvlTree/isEmpty.html">isEmpty</a></li>
+      <li><a href="avl_tree/AvlTree/largest.html">largest</a></li>
+      <li><a href="avl_tree/AvlTree/length.html">length</a></li>
+      <li class="inherited"><a href="avl_tree/AvlTree/runtimeType.html">runtimeType</a></li>
+      <li><a href="avl_tree/AvlTree/smallest.html">smallest</a></li>
+    
+      <li class="section-title inherited"><a href="avl_tree/AvlTree-class.html#operators">Operators</a></li>
+      <li class="inherited"><a href="avl_tree/AvlTree/operator_equals.html">operator ==</a></li>
+    
+      <li class="section-title"><a href="avl_tree/AvlTree-class.html#instance-methods">Methods</a></li>
+      <li><a href="avl_tree/AvlTree/add.html">add</a></li>
+      <li><a href="avl_tree/AvlTree/addAll.html">addAll</a></li>
+      <li><a href="avl_tree/AvlTree/contains.html">contains</a></li>
+      <li><a href="avl_tree/AvlTree/inorderEqualOrLarger.html">inorderEqualOrLarger</a></li>
+      <li><a href="avl_tree/AvlTree/inorderEqualOrSmaller.html">inorderEqualOrSmaller</a></li>
+      <li><a href="avl_tree/AvlTree/leftNeighbour.html">leftNeighbour</a></li>
+      <li class="inherited"><a href="avl_tree/AvlTree/noSuchMethod.html">noSuchMethod</a></li>
+      <li><a href="avl_tree/AvlTree/remove.html">remove</a></li>
+      <li><a href="avl_tree/AvlTree/rightNeighbour.html">rightNeighbour</a></li>
+      <li class="inherited"><a href="avl_tree/AvlTree/toString.html">toString</a></li>
+    </ol>
+  </div><!--/.sidebar-offcanvas-->
+
+</div> <!-- row -->
+</div> <!-- container -->
+
+<footer>
+  <div class="container-fluid">
+    <div class="container">
+      <p class="text-center">
+        <span class="no-break">
+          avl_tree 0.2.0
+        </span>
+        &bull;
+        <span class="no-break">
+          <a href="https://www.dartlang.org">
+            <img src="static-assets/favicon.png" alt="Dart" title="Dart" width="16" height="16">
+          </a>
+        </span>
+        &bull;
+        <span class="copyright no-break">
+          <a href="http://creativecommons.org/licenses/by-sa/4.0/">cc license</a>
+        </span>
+      </p>
+    </div>
+  </div>
+</footer>
+
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="static-assets/typeahead.bundle.min.js"></script>
+<script src="static-assets/prettify.js"></script>
+<script src="static-assets/URI.js"></script>
+<script src="static-assets/script.js"></script>
+<!-- Do not remove placeholder -->
+<!-- Footer Placeholder -->
+
+</body>
+
+</html>
