@@ -812,7 +812,7 @@ class AvlTree<T> {
           if (subtree.right != null) {
             return rightNeighbourInSubtree(subtree.right);
           } else {
-            return null;
+            return firstGreaterParent(subtree);
           }
           break; // to make the analyser happy
       }
@@ -877,7 +877,7 @@ class AvlTree<T> {
       switch (c) {
         case 0: // value == subtree.value
           if (subtree.left != null) {
-            return leftNeighbourInSubtree(subtree.left);
+            return _lookupRightMostLeaf(subtree.left);
           } else {
             return firstSmallerParent(subtree);
           }
