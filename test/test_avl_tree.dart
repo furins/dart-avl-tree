@@ -521,7 +521,7 @@ main() {
   });
 
   /* ------------------------------------------------------------------- */
-  group("reightNeighbour -", () {
+  group("rightNeighbour -", () {
     test("in an empty tree is always null", () {
       var tree = new AvlTree<int>();
       expect(tree.rightNeighbour(0), isNull);
@@ -572,6 +572,12 @@ main() {
       tree.add("z");
       expect(tree.rightNeighbour("nnn"), equals(["z"]));
       expect(tree.rightNeighbour("NNN"), equals(["z"]));
+    });
+  
+    test("regression test", () {
+      var tree = new AvlTree<int>();
+      tree.addAll([0, 5, 6]);
+      expect(tree.rightNeighbour(1), equals(5));
     });
   });
 }
