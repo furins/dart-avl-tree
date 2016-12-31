@@ -790,31 +790,20 @@ class AvlTree<T> {
 
     rightNeighbourInSubtree(_AvlTreeNode<T> subtree) {
       if (subtree == null) return null;
-      int c = localCompare(subtree.compareValue);
-      switch (c) {
-        case 0: // value == subtree.value
-          if (subtree.right != null) {
-            return _lookupLeftMostLeaf(subtree.right);
-          } else {
-            return firstGreaterParent(subtree);
-          }
-          break; // to make the analyser happy
-
-        case -1: // value < subtree.value
-          if (subtree.left != null) {
-            return rightNeighbourInSubtree(subtree.left);
-          } else {
-            return subtree;
-          }
-          break; // to make the analyser happy
-
-        case 1: // value > subtree.value
-          if (subtree.right != null) {
-            return rightNeighbourInSubtree(subtree.right);
-          } else {
-            return firstGreaterParent(subtree);
-          }
-          break; // to make the analyser happy
+      if (localCompare(subtree.compareValue) >= 0) {
+        // value >= subtree.value
+        if (subtree.right != null) {
+          return rightNeighbourInSubtree(subtree.right);
+        } else {
+          return firstGreaterParent(subtree);
+        }
+      } else {
+        // value < subtree.value
+        if (subtree.left != null) {
+          return rightNeighbourInSubtree(subtree.left);
+        } else {
+          return subtree;
+        }
       }
     }
 
@@ -873,31 +862,20 @@ class AvlTree<T> {
 
     leftNeighbourInSubtree(_AvlTreeNode<T> subtree) {
       if (subtree == null) return null;
-      int c = localCompare(subtree.compareValue);
-      switch (c) {
-        case 0: // value == subtree.value
-          if (subtree.left != null) {
-            return _lookupRightMostLeaf(subtree.left);
-          } else {
-            return firstSmallerParent(subtree);
-          }
-          break; //  to make the analyser happy
-
-        case -1: // value < subtree.value
-          if (subtree.left != null) {
-            return leftNeighbourInSubtree(subtree.left);
-          } else {
-            return firstSmallerParent(subtree);
-          }
-          break; //  to make the analyser happy
-
-        case 1: // value > subtree.value
-          if (subtree.right != null) {
-            return leftNeighbourInSubtree(subtree.right);
-          } else {
-            return subtree;
-          }
-          break; //  to make the analyser happy
+      if (localCompare(subtree.compareValue) <= 0) {
+        // value <= subtree.value
+        if (subtree.left != null) {
+          return leftNeighbourInSubtree(subtree.left);
+        } else {
+          return firstSmallerParent(subtree);
+        }
+      } else {
+        // value > subtree.value
+        if (subtree.right != null) {
+          return leftNeighbourInSubtree(subtree.right);
+        } else {
+          return subtree;
+        }
       }
     }
     return leftNeighbourInSubtree(_root);
