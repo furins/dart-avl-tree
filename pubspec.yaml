@@ -6,7 +6,7 @@ authors:
   - Karl Guggisberg <karl.guggisberg@guggis.ch>
   - stewbasic <https://github.com/stewbasic>
 
-version: 0.2.0+1
+version: 0.2.1
 homepage: https://github.com/Gubaer/dart-avl-tree.git
 documentation: http://gubaer.github.io/dart-avl-tree/
 
