@@ -11,4 +11,4 @@ homepage: https://github.com/Gubaer/dart-avl-tree.git
 documentation: http://gubaer.github.io/dart-avl-tree/
 
 dev_dependencies:
-  test: "^0.12.3"
+  test: "^0.12.18"
