@@ -298,11 +298,11 @@ main() {
 
       // now use a slightly different ordering under which all segments
       // intersecting in 'p' are equal
-      compare = (LineSegment other) => orientation(other.start, other.end, p);
+      var compare2 = (LineSegment other) => orientation(other.start, other.end, p);
 
       // with respect to this ordering sl is the left neighbour
       var ret;
-      ret = tree.leftNeighbour(compare);
+      ret = tree.leftNeighbour(compare2);
       expect(ret.length, 1);
       expect(ret.first, sl);
 
@@ -310,13 +310,13 @@ main() {
       // skip the ones on the current event => yields the first segment
       // to the right not crossing 'p'
       ret = tree
-          .inorderEqualOrLarger(compare)
-          .skipWhile((s) => compare(s.first) == 0);
+          .inorderEqualOrLarger(compare2)
+          .skipWhile((s) => compare2(s.first) == 0);
       expect(ret.first, [sr]);
 
       // also the right neighbour is the segment immediatelly to the right
       // of all "equal" segments, i.e. those intersecting at 'p'
-      ret = tree.rightNeighbour(compare);
+      ret = tree.rightNeighbour(compare2);
       expect(ret.length, 1);
       expect(ret[0], sr);
     });

@@ -1,8 +1,8 @@
 `avl_tree` provides  an implementation of an [AVL Tree](http://en.wikipedia.org/wiki/AVL_tree),
 a self-balancing binary search-tree.
  
-It's basically a port from an [implementation in Java
-by Justin Wheterell](https://code.google.com/p/java-algorithms-implementation/).
+It's basically a port by Karl Guggisberg, from an [implementation in Java
+by Justin Wheterell](https://code.google.com/p/java-algorithms-implementation/). Stefano Furin ported it to Dart 2.0+. 
  
 This implementation includes two custom features usually not present in
 AVL trees:

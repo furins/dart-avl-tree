@@ -1,10 +1,9 @@
 library test_avl_tree;
 
 import 'package:test/test.dart';
-import "dart:collection";
 
 import "dart:math";
-part "../lib/src/avl_tree.dart";
+import "../lib/avl_tree.dart";
 
 main() {
   group("an int tree with default ordering -", () {
@@ -25,23 +24,23 @@ main() {
       tree.add(1);
       tree.add(0);
       expect(tree.length, 3);
-      expect(tree._root.values, [1]);
-      expect(tree._root.left.values, [0]);
-      expect(tree._root.right.values, [2]);
+      expect(tree.root.values, [1]);
+      expect(tree.root.left.values, [0]);
+      expect(tree.root.right.values, [2]);
     });
   });
 
   group("an int tree with inverse ordering -", () {
     test("using a custom compare function", () {
-      var compare = (a, b) => b.compareTo(a);
+      var compare = (int a, int b) => b.compareTo(a);
       var tree = new AvlTree<int>(compare: compare);
       tree.add(2);
       tree.add(1);
       tree.add(0);
       expect(tree.length, 3);
-      expect(tree._root.values, [1]);
-      expect(tree._root.left.values, [2]);
-      expect(tree._root.right.values, [0]);
+      expect(tree.root.values, [1]);
+      expect(tree.root.left.values, [2]);
+      expect(tree.root.right.values, [0]);
     });
 
     test("using a custom compare function in the add operation", () {
@@ -53,9 +52,9 @@ main() {
       tree.add(1, compare: compare);
       tree.add(0, compare: compare);
       expect(tree.length, 3);
-      expect(tree._root.values, [1]);
-      expect(tree._root.left.values, [0]);
-      expect(tree._root.right.values, [2]);
+      expect(tree.root.values, [1]);
+      expect(tree.root.left.values, [0]);
+      expect(tree.root.right.values, [2]);
     });
   });
 
@@ -85,7 +84,7 @@ main() {
   group("removing -", () {
     test("removing from an empty tree is possible and returns false", () {
       var tree = new AvlTree<int>();
-      var ret = tree.remove(0);
+      tree.remove(0);
     });
 
     test(
@@ -95,7 +94,7 @@ main() {
       tree.add(0);
       tree.remove(0);
       expect(tree.length, 0);
-      expect(tree._root, isNull);
+      expect(tree.root, isNull);
     });
 
     test("removing two leafs, then the root is possible", () {
@@ -105,21 +104,21 @@ main() {
       tree.add(0);
       tree.remove(0);
       expect(tree.length, 2);
-      expect(tree._root.values, [1]);
-      expect(tree._root.right.values, [2]);
-      expect(tree._root.left, isNull);
+      expect(tree.root.values, [1]);
+      expect(tree.root.right.values, [2]);
+      expect(tree.root.left, isNull);
 
       var ret = tree.remove(2);
       expect(ret, true);
       expect(tree.length, 1);
-      expect(tree._root.values, [1]);
-      expect(tree._root.right, isNull);
-      expect(tree._root.left, isNull);
+      expect(tree.root.values, [1]);
+      expect(tree.root.right, isNull);
+      expect(tree.root.left, isNull);
 
       ret = tree.remove(1);
       expect(ret, true);
       expect(tree.length, 0);
-      expect(tree._root, isNull);
+      expect(tree.root, isNull);
     });
   });
 
@@ -146,7 +145,7 @@ main() {
       var tree = new AvlTree<int>();
       numbers.forEach((n) {
         tree.add(n);
-        ensureBalanceAndConsistency(tree._root);
+        ensureBalanceAndConsistency(tree.root);
       });
       var values = tree.inorder.toList();
       expect(values.length, 10);
@@ -167,15 +166,15 @@ main() {
       var tree = new AvlTree<int>();
       numbers.forEach((n) {
         tree.add(n);
-        ensureBalanceAndConsistency(tree._root);
+        ensureBalanceAndConsistency(tree.root);
       });
-      numbers = numbers.toList();
-      while (!numbers.isEmpty) {
-        var i = random.nextInt(numbers.length);
-        var v = numbers[i];
-        numbers.remove(v);
+      var numbers2 = numbers.toList();
+      while (!numbers2.isEmpty) {
+        var i = random.nextInt(numbers2.length);
+        var v = numbers2[i];
+        numbers2.remove(v);
         expect(tree.remove(v), true);
-        ensureBalanceAndConsistency(tree._root);
+        ensureBalanceAndConsistency(tree.root);
       }
     });
   });
@@ -236,7 +235,7 @@ main() {
     });
 
     test("with equivalence classes", () {
-      var compare = (s1, s2) {
+      var compare = (String s1, String s2) {
         return s1.toLowerCase().compareTo(s2.toLowerCase());
       };
       var tree =
@@ -322,7 +321,7 @@ main() {
     });
 
     test("with equivalence classes", () {
-      caseInsenstiveCompare(s, t) => s.toLowerCase().compareTo(t.toLowerCase());
+      caseInsenstiveCompare(String s, String t) => s.toLowerCase().compareTo(t.toLowerCase());
       var tree = new AvlTree<String>(
           compare: caseInsenstiveCompare, withEquivalenceClasses: true);
       tree.addAll(["aaa", "nnn", "NNN", "yyy"]);
@@ -489,7 +488,7 @@ main() {
         () {
       var tree = new AvlTree<int>();
       // orders the tree values in reverse numeric ordering
-      inverseNumeric(n, m) => m.compareTo(n);
+      inverseNumeric(int n, int m) => m.compareTo(n);
       buildComparator(int value) => (int other) => inverseNumeric(value, other);
 
       for (int i = 0; i < 10; i++) tree.add(i, compare: inverseNumeric);
@@ -504,7 +503,7 @@ main() {
     });
 
     test("in a string tree with equivalence classes", () {
-      caseInsensitiveOrdering(s, t) =>
+      caseInsensitiveOrdering(String s, String t) =>
           s.toLowerCase().compareTo(t.toLowerCase());
 
       var tree = new AvlTree<String>(
@@ -544,7 +543,7 @@ main() {
         () {
       var tree = new AvlTree<int>();
       // orders the tree values in reverse numeric ordering
-      inverseNumeric(n, m) => m.compareTo(n);
+      inverseNumeric(int n, int m) => m.compareTo(n);
       buildComparator(int value) => (int other) => inverseNumeric(value, other);
 
       for (int i = 0; i < 10; i++) tree.add(i, compare: inverseNumeric);
@@ -559,7 +558,7 @@ main() {
     });
 
     test("in a string tree with equivalence classes", () {
-      caseInsensitiveOrdering(s, t) =>
+      caseInsensitiveOrdering(String s, String t) =>
           s.toLowerCase().compareTo(t.toLowerCase());
 
       var tree = new AvlTree<String>(

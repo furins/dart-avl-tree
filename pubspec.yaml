@@ -3,12 +3,16 @@ description: >
    An implementation of an AVL tree (a balanced binary search tree)
 
 authors: 
+  - Stefano Furin<furins@gmail.com>
   - Karl Guggisberg <karl.guggisberg@guggis.ch>
   - stewbasic <https://github.com/stewbasic>
 
-version: 0.2.1
-homepage: https://github.com/Gubaer/dart-avl-tree.git
+environment:
+  sdk: ">=2.1.0 <3.0.0"
+
+version: 0.2.2
+homepage: https://github.com/furins/dart-avl-tree.git
 documentation: http://gubaer.github.io/dart-avl-tree/
 
 dev_dependencies:
-  test: "^0.12.18"
+  test: any
